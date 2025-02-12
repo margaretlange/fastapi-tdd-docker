@@ -1,4 +1,4 @@
 # Test-Driven Development with FastAPI and Docker
 
-![Continuous Integration and Delivery](https://github.com/margaretlange/fastapi-tdd-docker/workflows/Continuous%20Integration%20and%20Delivery/badge.svg?branch=main)
+![Continuous Integration and Delivery](https://github.com/margaretlange/fastapi-tdd-docker/workflows/main.yaml/badge.svg?branch=main)
 
