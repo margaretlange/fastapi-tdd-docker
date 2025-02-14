@@ -4,6 +4,7 @@
 from pydantic import AnyHttpUrl, BaseModel
 
 
+# summary schema
 class SummaryPayloadSchema(BaseModel):
     url: AnyHttpUrl
 
@@ -14,3 +15,6 @@ class SummaryResponseSchema(SummaryPayloadSchema):
 
 class SummaryUpdatePayloadSchema(SummaryPayloadSchema):
     summary: str
+
+
+# user schema add here
