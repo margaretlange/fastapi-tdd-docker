@@ -8,7 +8,7 @@ env:
 jobs:
 
   build:
-    name: Build Docker Image
+    name: Build API
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,14 +30,14 @@ jobs:
           docker build \
             --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.IMAGE }}:latest \
-            --file ./project/Dockerfile.prod \
-            "./project"
+            --file ./services/summaries/Dockerfile.prod \
+            "./services/summaries"
       - name: Push image
         run: |
           docker push ${{ env.IMAGE }}:latest
 
   test:
-    name: Test Docker Image
+    name: Test API
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -61,8 +61,8 @@ jobs:
           docker build \
             --cache-from ${{ env.IMAGE }}:latest \
             --tag ${{ env.IMAGE }}:latest \
-            --file ./project/Dockerfile.prod \
-            "./project"
+            --file ./services/summaries/Dockerfile.prod \
+            "./services/summaries"
       - name: Run container
         run: |
           docker run \
@@ -84,12 +84,9 @@ jobs:
         run: docker exec fastapi-tdd python -m isort . --check-only
 
   deploy:
-    name: Deploy to Heroku
+    name: Deploy to Ec2
     runs-on: ubuntu-latest
     needs: [build, test]
-    env:
-      HEROKU_APP_NAME: evening-scrubland-20878
-      HEROKU_REGISTRY_IMAGE: registry.heroku.com/${HEROKU_APP_NAME}/summarizer
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -99,26 +96,30 @@ jobs:
         run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull image
+      - name: Pull production image from github
         run: |
           docker pull ${{ env.IMAGE }}:latest || true
-      - name: Build image
+      - name: Configure AWS credentials 
+        uses: aws-actions/configure-aws-credentials@v1 
+        with:
+          aws-access-key-id: {{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: {{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push image to github and ECR
+        env:
+          ECR_REGISTRY_TAG: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: production
+          IMAGE_TAG: latest
         run: |
           docker build \
             --cache-from ${{ env.IMAGE }}:latest \
-            --tag ${{ env.HEROKU_REGISTRY_IMAGE }}:latest \
-            --file ./project/Dockerfile.prod \
-          "./project"
-      - name: Log in to the Heroku Container Registry
-        run: docker login -u _ -p ${HEROKU_AUTH_TOKEN} registry.heroku.com
-        env:
-          HEROKU_AUTH_TOKEN: ${{ secrets.HEROKU_AUTH_TOKEN }}
-      - name: Push to the registry
-        run: docker push ${{ env.HEROKU_REGISTRY_IMAGE }}
-      - name: Set environment variables
-        run: |
-          echo "HEROKU_REGISTRY_IMAGE=${{ env.HEROKU_REGISTRY_IMAGE }}" >> $GITHUB_ENV
-          echo "HEROKU_AUTH_TOKEN=${{ secrets.HEROKU_AUTH_TOKEN }}" >> $GITHUB_ENV
+            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --file ./services/Dockerfile.deploy
+          docker push ${{ env.IMAGE }}:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       - name: Release
         run: |
           chmod +x ./release.sh
