@@ -3,7 +3,9 @@ name: Continuous Integration and Delivery
 on: [push]
 
 env:
-  IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
+  IMAGE_API: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
+  IMAGE_FRONTEND:
+  IMAGE_DEPLOY:
 
 jobs:
 
@@ -98,7 +100,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull production image from github
         run: |
-          docker pull ${{ env.IMAGE }}:latest || true
+          docker pull ${{ env.IMAGE_DEPLOY }}:latest || true
       - name: Configure AWS credentials 
         uses: aws-actions/configure-aws-credentials@v1 
         with:
@@ -115,10 +117,10 @@ jobs:
           IMAGE_TAG: latest
         run: |
           docker build \
-            --cache-from ${{ env.IMAGE }}:latest \
+            --cache-from ${{ env.IMAGE_DEPLOY }}:latest \
             --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             --file ./services/Dockerfile.deploy
-          docker push ${{ env.IMAGE }}:latest
+          docker push ${{ env.IMAGE_DEPLOY }}:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       - name: Release
         run: |

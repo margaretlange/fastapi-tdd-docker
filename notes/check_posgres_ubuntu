@@ -1,0 +1,16 @@
+sudo apt-get install -y postgresql-client
+
+Do I have any notes on this already?
+
+now how do i find the rds address. maybe I can use the aws cli.
+
+aws rds describe-db-instances
+under endpoint, address:
+production.cke8al3jes86.us-west-2.rds.amazonaws.com
+
+
+psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
+called my_db i guess
+
+
+

@@ -3,6 +3,14 @@ https://dev.to/sre_panchanan/introduction-to-aws-s3-remote-backend-with-terrafor
 
 starting with create_terraform_backend as its own folder put this in gitlab?
 
+install docker
+sudo apt-get install docker
+
+sudo service docker start
+
+Testing sql connectivity
+
+
 
 ssl
 https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71

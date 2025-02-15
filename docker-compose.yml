@@ -1,12 +1,13 @@
 version: '3.8'
 
 services:
-
   web:
     build: ./services/summaries
     command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
       - ./services/summaries:/usr/src/app
+    ports:
+      - 8004:8000
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
@@ -28,6 +29,8 @@ services:
     build:
       context: ./services/client
       dockerfile: Dockerfile
+    ports:
+      - 3007:5173
     volumes:
       - './services/client:/usr/src/app'
       - '/usr/src/app/node_modules'
