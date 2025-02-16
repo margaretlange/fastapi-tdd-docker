@@ -22,6 +22,19 @@ sudo docker run hello-world
 sudo apt install docker-compose
 
 next step clone the repository
+add .ssh key to ec2
+add ssh key to settings
+clone repository
 
 ci-cd clone repo and rebuild (I know this is not ideal)
+
+
 add database url to environment (again not great)
+production.cke8al3jes86.us-west-2.rds.amazonaws.com
+
+export DATABASE_URL=postgres://production.cke8al3jes86.us-west-2.rds.amazonaws.com/my_db
+in .bashrc
+
+add user to docker otherwise it won't see environment variables with sudo?
+docker-compose -f docker-compose-prod.yml build
+docker-compose -f docker-compose-prod.yml build 

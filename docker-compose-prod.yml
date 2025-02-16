@@ -2,16 +2,13 @@ version: '3.8'
 
 services:
   web:
-    build: ./services/summaries
-    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
-    volumes:
-      - ./services/summaries:/usr/src/app
+    build:
+      context: ./services/summaries
+      dockerfile: Dockerfile.prod
     environment:
-      - ENVIRONMENT=dev
+      - ENVIRONMENT=prod
       - TESTING=0
       - DATABASE_URL=${DATABASE_URL}
-    depends_on:   # new
-      - web-db
   client:
     build:
       context: ./services/client
