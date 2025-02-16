@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Dockerised react serving from an nginx server
+          sample react app
         </a>
       </header>
     </div>

@@ -4,8 +4,6 @@ on: [push]
 
 env:
   IMAGE_API: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
-  IMAGE_FRONTEND:
-  IMAGE_DEPLOY:
 
 jobs:
 
@@ -26,17 +24,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull image
         run: |
-          docker pull ${{ env.IMAGE }}:latest || true
+          docker pull ${{ env.IMAGE_API }}:latest || true
       - name: Build image
         run: |
           docker build \
-            --cache-from ${{ env.IMAGE }}:latest \
-            --tag ${{ env.IMAGE }}:latest \
+            --cache-from ${{ env.IMAGE_API }}:latest \
+            --tag ${{ env.IMAGE_API }}:latest \
             --file ./services/summaries/Dockerfile.prod \
             "./services/summaries"
       - name: Push image
         run: |
-          docker push ${{ env.IMAGE }}:latest
+          docker push ${{ env.IMAGE_API }}:latest
 
   test:
     name: Test API
@@ -57,12 +55,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull image
         run: |
-          docker pull ${{ env.IMAGE }}:latest || true
+          docker pull ${{ env.IMAGE_API }}:latest || true
       - name: Build image
         run: |
           docker build \
-            --cache-from ${{ env.IMAGE }}:latest \
-            --tag ${{ env.IMAGE }}:latest \
+            --cache-from ${{ env.IMAGE_API }}:latest \
+            --tag ${{ env.IMAGE_API }}:latest \
             --file ./services/summaries/Dockerfile.prod \
             "./services/summaries"
       - name: Run container
@@ -75,7 +73,7 @@ jobs:
             -e DATABASE_URL=sqlite://sqlite.db \
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \
-            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE_API }}:latest
       - name: Pytest
         run: docker exec fastapi-tdd python -m pytest .
       - name: Flake8
@@ -84,45 +82,3 @@ jobs:
         run: docker exec fastapi-tdd python -m black . --check
       - name: isort
         run: docker exec fastapi-tdd python -m isort . --check-only
-
-  deploy:
-    name: Deploy to Ec2
-    runs-on: ubuntu-latest
-    needs: [build, test]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: main
-      - name: Log in to GitHub Packages
-        run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull production image from github
-        run: |
-          docker pull ${{ env.IMAGE_DEPLOY }}:latest || true
-      - name: Configure AWS credentials 
-        uses: aws-actions/configure-aws-credentials@v1 
-        with:
-          aws-access-key-id: {{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: {{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-1
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push image to github and ECR
-        env:
-          ECR_REGISTRY_TAG: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: production
-          IMAGE_TAG: latest
-        run: |
-          docker build \
-            --cache-from ${{ env.IMAGE_DEPLOY }}:latest \
-            --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            --file ./services/Dockerfile.deploy
-          docker push ${{ env.IMAGE_DEPLOY }}:latest
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      - name: Release
-        run: |
-          chmod +x ./release.sh
-          ./release.sh
