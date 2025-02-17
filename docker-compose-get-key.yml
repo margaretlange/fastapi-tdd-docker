@@ -37,3 +37,5 @@ services:
       - /home/ubuntu/certbot/conf:/etc/letsencrypt
       - /home/ubuntu/certbot/logs:/var/log/letsencrypt
       - /home/ubuntu/certbot/data:/var/www/html
+    depends on:
+      - nginx
