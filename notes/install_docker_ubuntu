@@ -38,3 +38,13 @@ in .bashrc
 add user to docker otherwise it won't see environment variables with sudo?
 docker-compose -f docker-compose-prod.yml build
 docker-compose -f docker-compose-prod.yml up 
+
+/var
+sudo du -hs * | sort -h | less
+/var/lib/docker
+
+docker rm -vf $(docker ps -aq)
+docker rmi -f $(docker images -aq)
+docker system prune to clear cache on tiny
+
+do i need to build from cache?
