@@ -37,4 +37,4 @@ in .bashrc
 
 add user to docker otherwise it won't see environment variables with sudo?
 docker-compose -f docker-compose-prod.yml build
-docker-compose -f docker-compose-prod.yml build 
+docker-compose -f docker-compose-prod.yml up 

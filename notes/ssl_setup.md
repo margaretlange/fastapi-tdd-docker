@@ -36,3 +36,12 @@ what is this classic load balancer??
 
 https://aws.amazon.com/getting-started/hands-on/get-a-domain/
 i don't want a classic load balancer just an ec2 instance
+
+i have my ec2 instance running docker-compose etc
+
+https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-ec2-instance.html
+see if i can do this with terraform
+
+://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record
+
+https://medium.com/@pentacent/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
