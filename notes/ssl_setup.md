@@ -1,3 +1,18 @@
+at the moment /init-letsencrypt.sh seems to do the trick. the config is intense and I only got it workign by starting with the github repo and going from there bit by bit.
+https://github.com/wmnnd/nginx-certbot
+https://pentacent.medium.com/nginx-and-lets-encrypt-with-docker-in-less-than-5-minutes-b4b8a60d3a71
+
+then
+docker-compose -f docker-compose-get-key.yml down
+docker-compose -f docker-compose-api-only.yml up
+then ping and docs should both work at mmldemo.com, http://mmldemo.com and https://mmldemo.com
+
+try out dummy react front end finally
+docker-compose -f docker-compose-api-only.yml down 
+docker-compose -f docker-compose-prod.yml down 
+
+
+
 ec2 looking at the folder learning-terraform-aws-instance
 https://dev.to/sre_panchanan/introduction-to-aws-s3-remote-backend-with-terraform-28i7
 

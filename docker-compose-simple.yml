@@ -1,9 +1,0 @@
-version: '3.8'
-
-services:
-  nginx:
-    image: nginx:latest
-    ports:
-      - 80:80
-    volumes:
-      - ./services/nginx/default-nginx-before-key.conf:/etc/nginx/conf.d/default.conf
