@@ -32,7 +32,7 @@ services:
       - client
   certbot:
     image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email margaret.meek@gmail.com --agree-tos --no-eff-email -d mmldemo.com 
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email margaret.meek@gmail.com --agree-tos --no-eff-email -d mmldemo.com --debug-challenges 
     volumes:
       - /home/ubuntu/certbot/conf:/etc/letsencrypt
       - /home/ubuntu/certbot/logs:/var/log/letsencrypt
