@@ -1,24 +1,6 @@
 version: '3.8'
 
 services:
-  web:
-    build:
-      context: ./services/summaries
-      dockerfile: Dockerfile.prod
-    environment:
-      - ENVIRONMENT=prod
-      - TESTING=0
-      - DATABASE_URL=${DATABASE_URL}
-  client:
-    build:
-      context: ./services/client
-      dockerfile: Dockerfile.prod
-    expose:
-      - 3000
-    environment:
-      - REACT_APP_API_SERVICE_URL=${REACT_APP_API_SERVICE_URL}
-    depends_on:
-      - web
   nginx:
     image: nginx:latest
     ports:
@@ -28,12 +10,10 @@ services:
       - ./services/nginx/default.conf:/etc/nginx/conf.d/default-nginx-before-key.conf
       - /home/ubuntu/certbot/data:/usr/share/nginx/html
       - /home/ubuntu/certbot/conf:/etc/nginx/ssl
-    depends_on:
-      - client
   certbot:
     image: certbot/certbot:latest
     command: certonly --webroot --webroot-path=/usr/share/nginx/html --email margaret.meek@gmail.com --agree-tos --no-eff-email -d mmldemo.com 
     volumes:
       - /home/ubuntu/certbot/conf:/etc/letsencrypt
       - /home/ubuntu/certbot/logs:/var/log/letsencrypt
-      - /home/ubuntu/certbot/data:/var/www/certbot
+      - /home/ubuntu/certbot/data:/usr/share/nginx/html
