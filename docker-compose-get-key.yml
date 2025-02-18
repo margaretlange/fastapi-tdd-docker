@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  web:
+    build:
+      context: ./services/summaries
+      dockerfile: Dockerfile.prod
+    environment:
+      - ENVIRONMENT=prod
+      - TESTING=0
+      - DATABASE_URL=${DATABASE_URL}
   nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
@@ -11,6 +19,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - web
     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
   certbot:
     image: certbot/certbot
