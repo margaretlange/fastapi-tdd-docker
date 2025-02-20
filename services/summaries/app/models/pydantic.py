@@ -1,6 +1,7 @@
 # project/app/models/pydantic.py
 
 from typing import Annotated
+
 from pydantic import AnyHttpUrl, BaseModel, StringConstraints
 
 

@@ -1,13 +1,14 @@
 # project/app/api/users.py
 from typing import List
+
 from fastapi import APIRouter, HTTPException, Path
+
 from app.api import crud
 from app.models.tortoise import UserSchema
 
 from app.models.pydantic import UserResponseSchema, UserPayloadSchema  # isort:skip
 
 router = APIRouter()
-import pdb
 
 
 @router.post("/", response_model=UserResponseSchema, status_code=201)

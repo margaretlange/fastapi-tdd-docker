@@ -4,7 +4,6 @@ from typing import List, Union
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
 from app.models.tortoise import TextSummary, User
-import datetime
 
 
 # summary crud

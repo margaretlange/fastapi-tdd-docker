@@ -2,7 +2,6 @@
 
 
 import json
-import pdb
 
 
 def test_create_user(test_app_with_db):
@@ -85,7 +84,6 @@ def test_read_all_users(test_app_with_db):
 
 
 def test_remove_user(test_app_with_db):
-
     response = test_app_with_db.post(
         "/users/", data=json.dumps({"username": "John Smith"})
     )
