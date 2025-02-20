@@ -11,6 +11,7 @@ try out dummy react front end finally
 docker-compose -f docker-compose-api-only.yml down 
 docker-compose -f docker-compose-prod.yml down 
 
+having trouble passing swagger docs through though
 
 
 ec2 looking at the folder learning-terraform-aws-instance

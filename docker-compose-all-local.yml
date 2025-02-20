@@ -24,3 +24,20 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  client:
+    stdin_open: true
+    build:
+      context: ./services/client
+      dockerfile: Dockerfile
+    expose:
+      - 3000 
+    ports:
+      - 3000:3000
+    volumes:
+      - './services/client:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_SERVICE_URL=${REACT_APP_API_SERVICE_URL}
+    depends_on:
+      - web

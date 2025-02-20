@@ -2,35 +2,36 @@
 
 from typing import List, Union
 
-from app.models.pydantic import SummaryPayloadSchema
-from app.models.tortoise import TextSummary
+from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
+from app.models.tortoise import TextSummary, User
+import datetime
 
 
 # summary crud
-async def post(payload: SummaryPayloadSchema) -> int:
+async def post_summary(payload: SummaryPayloadSchema) -> int:
     summary = TextSummary(url=payload.url, summary="")
     await summary.save()
     return summary.id
 
 
-async def get(id: int) -> Union[dict, None]:
+async def get_summary(id: int) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).first().values()
     if summary:
         return summary
     return None
 
 
-async def get_all() -> List:
+async def get_all_summaries() -> List:
     summaries = await TextSummary.all().values()
     return summaries
 
 
-async def delete(id: int) -> int:
+async def delete_summary(id: int) -> int:
     summary = await TextSummary.filter(id=id).first().delete()
     return summary
 
 
-async def put(id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
+async def put_summary(id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).update(
         url=payload.url, summary=payload.summary
     )
@@ -38,3 +39,27 @@ async def put(id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
         updated_summary = await TextSummary.filter(id=id).first().values()
         return updated_summary
     return None
+
+
+# user crud
+async def post_user(payload: UserPayloadSchema) -> int:
+    user = User(username=payload.username)
+    await user.save()
+    return user.id
+
+
+async def get_user(id: int) -> Union[dict, None]:
+    user = await User.filter(id=id).first().values()
+    if user:
+        return user
+    return None
+
+
+async def get_all_users() -> List:
+    users = await User.all().values()
+    return users
+
+
+async def delete_user(id: int) -> int:
+    user = await User.filter(id=id).first().delete()
+    return user

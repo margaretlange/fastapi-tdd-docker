@@ -1,7 +1,7 @@
 # project/app/models/pydantic.py
 
-
-from pydantic import AnyHttpUrl, BaseModel
+from typing import Annotated
+from pydantic import AnyHttpUrl, BaseModel, StringConstraints
 
 
 # summary schema
@@ -18,3 +18,9 @@ class SummaryUpdatePayloadSchema(SummaryPayloadSchema):
 
 
 # user schema add here
+class UserPayloadSchema(BaseModel):
+    username: Annotated[str, StringConstraints(max_length=50)]
+
+
+class UserResponseSchema(UserPayloadSchema):
+    id: int
