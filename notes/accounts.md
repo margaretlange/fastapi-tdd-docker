@@ -14,3 +14,10 @@ dynamo db for terraform state?
 in learn-terraform-aws-instance
 docker images repo
 leftover elasticbeanstalk s3 bucket??
+
+
+google app
+but now time to sign up for auth0
+AUTH0_DOMAIN
+AUTH0_CLIENT_ID
+AUTH0_CLIENT_SECRET
