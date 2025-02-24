@@ -7,21 +7,21 @@ from datetime import datetime
 import pytest
 
 from app.api import crud, summaries
+import pdb
 
 
 def test_create_summary(test_app, monkeypatch):
-    test_request_payload = {"url": "https://foo.bar"}
-    test_response_payload = {"id": 1, "url": "https://foo.bar/"}
+    test_request_payload = {"query": "Who was Charles Darwin?"}
+    test_response_payload = {"id": 1, "query": "Who was Charles Darwin?"}
 
     async def mock_post(payload):
         return 1
 
-    def mock_generate_summary(summary_id, url):
+    def mock_generate_summary(summary_id, query):
         return None
 
     monkeypatch.setattr(crud, "post_summary", mock_post)
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
-
     response = test_app.post(
         "/summaries/",
         data=json.dumps(test_request_payload),
@@ -38,7 +38,7 @@ def test_create_summaries_invalid_json(test_app):
         "detail": [
             {
                 "type": "missing",
-                "loc": ["body", "url"],
+                "loc": ["body", "query"],
                 "msg": "Field required",
                 "input": {},
                 "url": "https://errors.pydantic.dev/2.10/v/missing",
@@ -46,17 +46,20 @@ def test_create_summaries_invalid_json(test_app):
         ]
     }
 
-    response = test_app.post("/summaries/", data=json.dumps({"url": "invalid://url"}))
+    response = test_app.post(
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
+    )
     assert response.status_code == 422
     assert (
-        response.json()["detail"][0]["msg"] == "URL scheme should be 'http' or 'https'"
+        response.json()["detail"][0]["msg"]
+        == "String should match pattern '.*\\?$'"
     )
 
 
 def test_read_summary(test_app, monkeypatch):
     test_data = {
         "id": 1,
-        "url": "https://foo.bar",
+        "query": "Who was Charles Darwin?",
         "summary": "summary",
         "created_at": datetime.utcnow().isoformat(),
     }
@@ -86,13 +89,13 @@ def test_read_all_summaries(test_app, monkeypatch):
     test_data = [
         {
             "id": 1,
-            "url": "https://foo.bar",
+            "query": "Who was Charles Darwin?",
             "summary": "summary",
             "created_at": datetime.utcnow().isoformat(),
         },
         {
             "id": 2,
-            "url": "https://testdrivenn.io",
+            "query": "Who was Ada Lovelace?",
             "summary": "summary",
             "created_at": datetime.utcnow().isoformat(),
         },
@@ -112,7 +115,7 @@ def test_remove_summary(test_app, monkeypatch):
     async def mock_get(id):
         return {
             "id": 1,
-            "url": "https://foo.bar",
+            "query": "Who was Charles Darwin?",
             "summary": "summary",
             "created_at": datetime.utcnow().isoformat(),
         }
@@ -126,7 +129,7 @@ def test_remove_summary(test_app, monkeypatch):
 
     response = test_app.delete("/summaries/1/")
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "url": "https://foo.bar/"}
+    assert response.json() == {"id": 1, "query": "Who was Charles Darwin?"}
 
 
 def test_remove_summary_incorrect_id(test_app, monkeypatch):
@@ -141,10 +144,10 @@ def test_remove_summary_incorrect_id(test_app, monkeypatch):
 
 
 def test_update_summary(test_app, monkeypatch):
-    test_request_payload = {"url": "https://foo.bar", "summary": "updated"}
+    test_request_payload = {"query": "Who was Charles Darwin?", "summary": "updated"}
     test_response_payload = {
         "id": 1,
-        "url": "https://foo.bar",
+        "query": "Who was Charles Darwin?",
         "summary": "summary",
         "created_at": datetime.utcnow().isoformat(),
     }
@@ -167,13 +170,13 @@ def test_update_summary(test_app, monkeypatch):
     [
         [
             999,
-            {"url": "https://foo.bar", "summary": "updated!"},
+            {"query": "Who was Charles Darwin?", "summary": "updated!"},
             404,
             "Summary not found",
         ],
         [
             0,
-            {"url": "https://foo.bar", "summary": "updated!"},
+            {"query": "Who was Charles Darwin?", "summary": "updated!"},
             422,
             [
                 {
@@ -193,7 +196,7 @@ def test_update_summary(test_app, monkeypatch):
             [
                 {
                     "type": "missing",
-                    "loc": ["body", "url"],
+                    "loc": ["body", "query"],
                     "msg": "Field required",
                     "input": {},
                     "url": "https://errors.pydantic.dev/2.10/v/missing",
@@ -209,14 +212,14 @@ def test_update_summary(test_app, monkeypatch):
         ],
         [
             1,
-            {"url": "https://foo.bar"},
+            {"query": "Who was Charles Darwin?"},
             422,
             [
                 {
                     "type": "missing",
                     "loc": ["body", "summary"],
                     "msg": "Field required",
-                    "input": {"url": "https://foo.bar"},
+                    "input": {"query": "Who was Charles Darwin?"},
                     "url": "https://errors.pydantic.dev/2.10/v/missing",
                 }
             ],
@@ -236,12 +239,13 @@ def test_update_summary_invalid(
     assert response.json()["detail"] == detail
 
 
-def test_update_summary_invalid_url(test_app):
+def test_update_summary_invalid_query(test_app):
     response = test_app.put(
         "/summaries/1/",
-        data=json.dumps({"url": "invalid://url", "summary": "updated!"}),
+        data=json.dumps({"query": "Who was Charles Darwin", "summary": "updated!"}),
     )
     assert response.status_code == 422
     assert (
-        response.json()["detail"][0]["msg"] == "URL scheme should be 'http' or 'https'"
+        response.json()["detail"][0]["msg"]
+        == "String should match pattern '.*\\?$'"
     )

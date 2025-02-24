@@ -2,12 +2,18 @@
 
 from typing import Annotated
 
-from pydantic import AnyHttpUrl, BaseModel, StringConstraints
+from pydantic import BaseModel, StringConstraints, Field
 
 
 # summary schema
 class SummaryPayloadSchema(BaseModel):
-    url: AnyHttpUrl
+    query: Annotated[
+        str,
+        Field(
+            pattern=r".*\?$",
+            description="Query must be a question ending with a question mark.",
+        ),
+    ]
 
 
 class SummaryResponseSchema(SummaryPayloadSchema):

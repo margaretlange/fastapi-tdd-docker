@@ -1,24 +1,13 @@
 # project/app/summarizer.py
 
-
-import nltk
-from newspaper import Article
+from assistant.graph import graph
+from assistant.state import SummaryStateInput
+import asyncio
 
 from app.models.tortoise import TextSummary
 
 
-async def generate_summary(summary_id: int, url: str) -> None:
-    article = Article(url)
-    article.download()
-    article.parse()
-    try:
-        nltk.data.find("tokenizers/punkt")
-    except LookupError:
-        nltk.download("punkt_tab")
-        nltk.download("punkt")
-    finally:
-        article.nlp()
-    summary = article.summary
-
-    # await asyncio.sleep(10)
-    await TextSummary.filter(id=summary_id).update(summary=summary)
+async def generate_summary(summary_id: int, query: str) -> None:
+    state = SummaryStateInput(research_topic=query)
+    result = graph.invoke(state)
+    await TextSummary.filter(id=summary_id).update(summary=result["running_summary"])

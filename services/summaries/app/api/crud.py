@@ -4,11 +4,11 @@ from typing import List, Union
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
 from app.models.tortoise import TextSummary, User
-
+import pdb
 
 # summary crud
 async def post_summary(payload: SummaryPayloadSchema) -> int:
-    summary = TextSummary(url=payload.url, summary="")
+    summary = TextSummary(query=payload.query, summary="")
     await summary.save()
     return summary.id
 
@@ -32,7 +32,7 @@ async def delete_summary(id: int) -> int:
 
 async def put_summary(id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
     summary = await TextSummary.filter(id=id).update(
-        url=payload.url, summary=payload.summary
+        query=payload.query, summary=payload.summary
     )
     if summary:
         updated_summary = await TextSummary.filter(id=id).first().values()

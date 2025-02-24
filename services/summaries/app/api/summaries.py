@@ -14,16 +14,18 @@ from app.models.pydantic import (  # isort:skip
 )
 
 router = APIRouter()
+import pdb
 
 
 @router.post("/", response_model=SummaryResponseSchema, status_code=201)
 async def create_summary(
     payload: SummaryPayloadSchema, background_tasks: BackgroundTasks
 ) -> SummaryResponseSchema:
+    # pdb.set_trace()
     summary_id = await crud.post_summary(payload)
 
-    background_tasks.add_task(generate_summary, summary_id, str(payload.url))
-    response_object = {"id": summary_id, "url": payload.url}
+    background_tasks.add_task(generate_summary, summary_id, str(payload.query))
+    response_object = {"id": summary_id, "query": payload.query}
     return response_object
 
 

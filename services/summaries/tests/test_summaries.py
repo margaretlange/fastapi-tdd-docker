@@ -9,17 +9,17 @@ from app.api import summaries
 
 
 def test_create_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, url):
+    def mock_generate_summary(summary_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://foo.bar/"})
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
 
     assert response.status_code == 201
-    assert response.json()["url"] == "https://foo.bar/"
+    assert response.json()["query"] == "Who was Charles Darwin?"
 
 
 def test_create_summaries_invalid_json(test_app):
@@ -29,7 +29,7 @@ def test_create_summaries_invalid_json(test_app):
         "detail": [
             {
                 "input": {},
-                "loc": ["body", "url"],
+                "loc": ["body", "query"],
                 "msg": "Field required",
                 "type": "missing",
                 "url": "https://errors.pydantic.dev/2.10/v/missing",
@@ -37,20 +37,23 @@ def test_create_summaries_invalid_json(test_app):
         ]
     }
 
-    response = test_app.post("/summaries/", data=json.dumps({"url": "invalid://url"}))
+    response = test_app.post(
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
+    )
     assert response.status_code == 422
     assert (
-        response.json()["detail"][0]["msg"] == "URL scheme should be 'http' or 'https'"
+        response.json()["detail"][0]["msg"]
+        == "Query must be a question ending with a question mark."
     )
 
 
 def test_read_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, url):
+    def mock_generate_summary(summary_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
     response = test_app_with_db.get(f"/summaries/{summary_id}/")
@@ -58,7 +61,7 @@ def test_read_summary(test_app_with_db, monkeypatch):
 
     response_dict = response.json()
     assert response_dict["id"] == summary_id
-    assert response_dict["url"] == "https://foo.bar/"
+    assert response_dict["query"] == "Who was Charles Darwin?"
     assert response_dict["summary"] == ""
     assert response_dict["created_at"]
 
@@ -85,13 +88,13 @@ def test_read_summary_incorrect_id(test_app_with_db):
 
 
 def test_read_all_summaries(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, url):
+    def mock_generate_summary(summary_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
 
@@ -103,19 +106,19 @@ def test_read_all_summaries(test_app_with_db, monkeypatch):
 
 
 def test_remove_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, url):
+    def mock_generate_summary(summary_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
 
     response = test_app_with_db.delete(f"/summaries/{summary_id}/")
     assert response.status_code == 200
-    assert response.json() == {"id": summary_id, "url": "https://foo.bar/"}
+    assert response.json() == {"id": summary_id, "query": "Who was Charles Darwin?"}
 
 
 def test_remove_summary_incorrect_id(test_app_with_db):
@@ -140,25 +143,25 @@ def test_remove_summary_incorrect_id(test_app_with_db):
 
 
 def test_update_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, url):
+    def mock_generate_summary(summary_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"url": "https://foo.bar"})
+        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
 
     response = test_app_with_db.put(
         f"/summaries/{summary_id}/",
-        data=json.dumps({"url": "https://foo.bar", "summary": "updated!"}),
+        data=json.dumps({"query": "Who was Charles Darwin?", "summary": "updated!"}),
     )
     assert response.status_code == 200
 
     response_dict = response.json()
     assert response_dict["id"] == summary_id
-    assert response_dict["url"] == "https://foo.bar/"
+    assert response_dict["query"] == "Who was Charles Darwin?"
     assert response_dict["summary"] == "updated!"
     assert response_dict["created_at"]
 
@@ -168,13 +171,13 @@ def test_update_summary(test_app_with_db, monkeypatch):
     [
         [
             999,
-            {"url": "https://foo.bar", "summary": "updated!"},
+            {"query": "Who was Charles Darwin?", "summary": "updated!"},
             404,
             "Summary not found",
         ],
         [
             0,
-            {"url": "https://foo.bar", "summary": "updated!"},
+            {"query": "Who was Charles Darwin?", "summary": "updated!"},
             422,
             [
                 {
@@ -194,7 +197,7 @@ def test_update_summary(test_app_with_db, monkeypatch):
             [
                 {
                     "type": "missing",
-                    "loc": ["body", "url"],
+                    "loc": ["body", "query"],
                     "msg": "Field required",
                     "input": {},
                     "url": "https://errors.pydantic.dev/2.10/v/missing",
@@ -210,14 +213,14 @@ def test_update_summary(test_app_with_db, monkeypatch):
         ],
         [
             1,
-            {"url": "https://foo.bar"},
+            {"query": "Who was Charles Darwin?"},
             422,
             [
                 {
                     "type": "missing",
                     "loc": ["body", "summary"],
                     "msg": "Field required",
-                    "input": {"url": "https://foo.bar"},
+                    "input": {"query": "Who was Charles Darwin?"},
                     "url": "https://errors.pydantic.dev/2.10/v/missing",
                 }
             ],
@@ -235,12 +238,13 @@ def test_update_summary_invalid(
     assert response.json()["detail"] == detail
 
 
-def test_update_summary_invalid_url(test_app):
+def test_update_summary_invalid_query(test_app):
     response = test_app.put(
         "/summaries/1/",
-        data=json.dumps({"url": "invalid://url", "summary": "updated!"}),
+        data=json.dumps({"query": "Who was Charles Darwin", "summary": "updated!"}),
     )
     assert response.status_code == 422
     assert (
-        response.json()["detail"][0]["msg"] == "URL scheme should be 'http' or 'https'"
+        response.json()["detail"][0]["msg"]
+        == "Query must be a question ending with a question mark."
     )
