@@ -2,7 +2,7 @@
 
 
 import json
-from datetime import datetime
+import datetime
 
 import pytest
 
@@ -50,10 +50,7 @@ def test_create_summaries_invalid_json(test_app):
         "/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
     )
     assert response.status_code == 422
-    assert (
-        response.json()["detail"][0]["msg"]
-        == "String should match pattern '.*\\?$'"
-    )
+    assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
 
 
 def test_read_summary(test_app, monkeypatch):
@@ -61,7 +58,9 @@ def test_read_summary(test_app, monkeypatch):
         "id": 1,
         "query": "Who was Charles Darwin?",
         "summary": "summary",
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.datetime.now(datetime.UTC).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        ),
     }
 
     async def mock_get(id):
@@ -91,13 +90,17 @@ def test_read_all_summaries(test_app, monkeypatch):
             "id": 1,
             "query": "Who was Charles Darwin?",
             "summary": "summary",
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.datetime.now(datetime.UTC).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            ),
         },
         {
             "id": 2,
             "query": "Who was Ada Lovelace?",
             "summary": "summary",
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.datetime.now(datetime.UTC).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            ),
         },
     ]
 
@@ -117,7 +120,9 @@ def test_remove_summary(test_app, monkeypatch):
             "id": 1,
             "query": "Who was Charles Darwin?",
             "summary": "summary",
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.datetime.now(datetime.UTC).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            ),
         }
 
     monkeypatch.setattr(crud, "get_summary", mock_get)
@@ -149,7 +154,9 @@ def test_update_summary(test_app, monkeypatch):
         "id": 1,
         "query": "Who was Charles Darwin?",
         "summary": "summary",
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": datetime.datetime.now(datetime.UTC).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        ),
     }
 
     async def mock_put(id, payload):
@@ -245,7 +252,4 @@ def test_update_summary_invalid_query(test_app):
         data=json.dumps({"query": "Who was Charles Darwin", "summary": "updated!"}),
     )
     assert response.status_code == 422
-    assert (
-        response.json()["detail"][0]["msg"]
-        == "String should match pattern '.*\\?$'"
-    )
+    assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"

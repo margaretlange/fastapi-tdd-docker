@@ -15,9 +15,13 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
+      - name: Step up ssh agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.TESTING_API_SSH_PRIVATE }}
       - name: Log in to GitHub Packages
         run: echo ${GITHUB_TOKEN} | docker login -u ${GITHUB_ACTOR} --password-stdin ghcr.io
         env:
@@ -72,6 +76,8 @@ jobs:
             -e ENVIRONMENT=dev \
             -e DATABASE_URL=sqlite://sqlite.db \
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
+            -e TAVILY_API_KEY=${{ secrets.TAVILY_API_KEY }} \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -p 5003:8765 \
             ${{ env.IMAGE_API }}:latest
       - name: Pytest

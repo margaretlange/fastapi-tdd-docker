@@ -52,3 +52,34 @@ retesting now
 docker-compose exec web python -m pytest -k "ping"
 # did all test unit summary next
 # now i need to migrate db again
+
+redoing and testing the two migration steps
+
+trying commands in curl.sh
+
+actually i tried the web app version nice.
+
+
+github actions ssh key ugggggh
+new key pair
+private key in secrets for ollama account
+public key right now for entire margaretlange account
+
+docker build \
+       --tag testingapi:latest \
+       --file ./services/summaries/Dockerfile.prod \
+       "./services/summaries"
+
+docker run \
+        --name fastapi-tdd \
+        -e PORT=8765 \
+        -e ENVIRONMENT=dev \
+        -e DATABASE_URL=sqlite://sqlite.db \
+        -e DATABASE_TEST_URL=sqlite://sqlite.db \
+        -e TAVILY_API_KEY=$TAVILY_API_KEY \
+        -e OPENAI_API_KEY=$OPENAI_API_KEY \
+        -p 5003:8765 \
+        testingapi:latest
+
+docker exec fastapi-tdd python -m pytest .
+
