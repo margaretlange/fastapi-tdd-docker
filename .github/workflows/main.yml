@@ -3,7 +3,7 @@ name: Continuous Integration and Delivery
 on: [push]
 
 env:
-  API_IMAGE: ghcr.io/fastapi-tdd-docker/summarizer
+  API_IMAGE: ghcr.io/$(echo $GITHUB_REPOSITORY | tr '[A-Z]' '[a-z]')/summarizer
 
 jobs:
   build:
@@ -50,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull image
-        run: docker pull ${{ env.API_IMAGE }}:latest
+        run: docker pull ${{ env.API_IMAGE }}:latest || true
       - name: Run container
         run: |
           docker run \
