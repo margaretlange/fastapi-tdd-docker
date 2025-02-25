@@ -60,11 +60,6 @@ trying commands in curl.sh
 actually i tried the web app version nice.
 
 
-github actions ssh key ugggggh
-new key pair
-private key in secrets for ollama account
-public key right now for entire margaretlange account
-
 docker build \
        --tag testingapi:latest \
        --file ./services/summaries/Dockerfile.prod \
@@ -82,4 +77,12 @@ docker run \
         testingapi:latest
 
 docker exec fastapi-tdd python -m pytest .
+
+github actions ssh key ugggggh
+new key pair
+private key in secrets for fastapi account
+public key added to ollama as deploy key
+
+
+https://github.com/webfactory/ssh-agent
 

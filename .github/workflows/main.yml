@@ -30,6 +30,9 @@ jobs:
         run: |
           docker pull ${{ env.IMAGE_API }}:latest || true
       - name: Build image
+        with:
+          ssh: |
+            default=${{ env.SSH_AUTH_SOCK }}
         run: |
           docker build \
             --cache-from ${{ env.IMAGE_API }}:latest \
