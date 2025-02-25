@@ -50,15 +50,15 @@ jobs:
       - name: Run container
         run: |
           docker run \
-           -d \
-           --name test-api \
-           -e PORT=8765 \
-           -e ENVIRONMENT=dev \
-        ¦  -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-           -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
-           -e DATABASE_URL=sqlite://sqlite.db \
-           -e DATABASE_TEST_URL=sqlite://sqlite.db \
-           -p 5003:8765 \
+            -d \
+            --name test-api \
+            -e PORT=8765 \
+            -e ENVIRONMENT=dev \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
+            -e DATABASE_URL=sqlite://sqlite.db \
+            -e DATABASE_TEST_URL=sqlite://sqlite.db \
+            -p 5003:8765 \
             ${{ env.API_IMAGE }}:latest
       - name: Pytest
         run: docker exec test-api python -m pytest .
