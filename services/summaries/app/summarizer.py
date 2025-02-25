@@ -2,9 +2,11 @@
 
 from assistant.graph import graph
 from assistant.state import SummaryStateInput
-import asyncio
 
 from app.models.tortoise import TextSummary
+
+# import asyncio
+
 
 
 async def generate_summary(summary_id: int, query: str) -> None:

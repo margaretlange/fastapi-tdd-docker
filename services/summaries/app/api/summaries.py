@@ -14,7 +14,6 @@ from app.models.pydantic import (  # isort:skip
 )
 
 router = APIRouter()
-import pdb
 
 
 @router.post("/", response_model=SummaryResponseSchema, status_code=201)

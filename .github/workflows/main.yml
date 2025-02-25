@@ -36,3 +36,35 @@ jobs:
           tags: ${{ env.API_IMAGE }}:latest
           file: ./services/summaries/Dockerfile.prod
           context: ./services/summaries
+  test:
+    name: Test Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Pull image
+        run: docker pull ${{ env.API_IMAGE }}:latest
+      - name: Run container
+        run: |
+          docker run \
+           -d \
+           --name test-api \
+           -e PORT=8765 \
+           -e ENVIRONMENT=dev \
+        ¦  -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+           -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
+           -e DATABASE_URL=sqlite://sqlite.db \
+           -e DATABASE_TEST_URL=sqlite://sqlite.db \
+           -p 5003:8765 \
+            ${{ env.API_IMAGE }}:latest
+      - name: Pytest
+        run: docker exec test-api python -m pytest .
+      - name: Flake8
+        run: docker exec test-api python -m flake8 .
+      - name: Black
+        run: docker exec test-api python -m black --check .
+      - name: isort
+        run: docker exec test-api python -m isort --check .

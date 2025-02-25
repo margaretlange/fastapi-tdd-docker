@@ -4,7 +4,7 @@ from typing import List, Union
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
 from app.models.tortoise import TextSummary, User
-import pdb
+
 
 # summary crud
 async def post_summary(payload: SummaryPayloadSchema) -> int:

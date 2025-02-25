@@ -1,13 +1,12 @@
 # project/tests/test_summaries_unit.py
 
 
-import json
 import datetime
+import json
 
 import pytest
 
 from app.api import crud, summaries
-import pdb
 
 
 def test_create_summary(test_app, monkeypatch):

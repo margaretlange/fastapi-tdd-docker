@@ -26,3 +26,6 @@ docker-compose exec web python -m pytest -l
 
 # list the 2 slowest tests
 docker-compose exec web python -m pytest --durations=2
+
+# linting
+

@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from pydantic import BaseModel, StringConstraints, Field
+from pydantic import BaseModel, Field, StringConstraints
 
 
 # summary schema

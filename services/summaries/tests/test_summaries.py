@@ -41,10 +41,7 @@ def test_create_summaries_invalid_json(test_app):
         "/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
     )
     assert response.status_code == 422
-    assert (
-        response.json()["detail"][0]["msg"]
-        == "String should match pattern '.*\\?$'"
-    )
+    assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
 
 
 def test_read_summary(test_app_with_db, monkeypatch):
@@ -244,7 +241,4 @@ def test_update_summary_invalid_query(test_app):
         data=json.dumps({"query": "Who was Charles Darwin", "summary": "updated!"}),
     )
     assert response.status_code == 422
-    assert (
-        response.json()["detail"][0]["msg"]
-        == "String should match pattern '.*\\?$'"
-    )
+    assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
