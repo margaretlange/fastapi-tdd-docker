@@ -13,26 +13,7 @@ psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
 called my_db i guess
 postgres://production.cke8al3jes86.us-west-2.rds.amazonaws.com/my_db 
 
+make sure the DATABASE_URL is well formed. that was my issue
+here is the correct format:
+'postgres://[user]:[password]@production.cke8al3jes86.us-west-2.rds.amazonaws.com:5432/my_db'
 
-removed migrations folder
-ran docker-compose -f docker-compose-api-only.yml exec web aerich init -t app.db.TORTOISE_ORM
-uh oh i can't get to postgres from inside the container
-psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
-psql: error: connection to server at "production.cke8al3jes86.us-west-2.rds.amazonaws.com" (172.31.59.80), port 5432 failed: FATAL:  password authentication failed for user "postgres"
-connection to server at "production.cke8al3jes86.us-west-2.rds.amazonaws.com" (172.31.59.80), port 5432 failed: FATAL:  no pg_hba.conf entry for host "172.31.24.7", user "postgres", database "my_db", no encryption
-
-how did i deal with this before? dude who knows
-
-https://stackoverflow.com/questions/73433743/cannot-connect-to-rds-from-inside-a-docker-container-i-can-from-the-host-and-i
-
-RDS internal and external Ips
-The reason behind this is your Docker container is trying to resolve your RDS DNS using public DNS rather than private one.
-
-For a clean workaround, you need to adjust your Docker container DNS configuration into your VPC internal DNS IPv4 address. Using --dns, you can quickly adjust this and you can add more DNS if your application is trying to reach other services as well.
-
-example docker call
-
-as an ec2 property I see private ip dns name
-172.31.24.7
-
-docker run --name app --dns=169.254.169.253 -p 80:5000 -d app

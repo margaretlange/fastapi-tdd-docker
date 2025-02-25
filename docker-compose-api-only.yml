@@ -11,6 +11,8 @@ services:
       - ENVIRONMENT=prod
       - TESTING=0
       - DATABASE_URL=${DATABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TAVILY_KEY=${TAVILY_KEY}
   nginx:
     image: nginx:1.15-alpine
     restart: unless-stopped
