@@ -20,6 +20,10 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo docker run hello-world
 
 sudo apt install docker-compose
+latest version
+curl -L "https://github.com/docker/compose/releases/download/`curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/docker/compose/releases/latest | sed 's#.*tag/##g' && echo`/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+
+
 
 next step clone the repository
 add .ssh key to ec2
@@ -48,3 +52,7 @@ docker rmi -f $(docker images -aq)
 docker system prune to clear cache on tiny
 
 do i need to build from cache?
+
+update docker compose to v.2.20.3 
+okay i ended up having it on ubuntu as 2.33 - 
+confused do i have to restart ssh-agent?

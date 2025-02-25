@@ -29,3 +29,6 @@ docker-compose exec web python -m pytest --durations=2
 
 # linting
 
+# migrate db (file api only)
+docker-compose -f docker-compose-api-only.yml exec web aerich init -t app.db.TORTOISE_ORM
+docker-compose -f docker-compose-api-only.yml exec web aerich init-db 

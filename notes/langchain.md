@@ -138,3 +138,7 @@ test:
 
 updating the deploy instance
 add api keys to bashrc
+
+add ssh key to agent
+make sure ssh key is github personal account
+add ssh to docker compose
