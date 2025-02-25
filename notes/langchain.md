@@ -135,3 +135,6 @@ test:
         run: docker exec fastapi-tdd python -m black . --check
       - name: isort
         run: docker exec fastapi-tdd python -m isort . --check-only
+
+updating the deploy instance
+add api keys to bashrc
