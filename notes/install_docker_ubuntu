@@ -36,8 +36,11 @@ ci-cd clone repo and rebuild (I know this is not ideal)
 add database url to environment (again not great)
 production.cke8al3jes86.us-west-2.rds.amazonaws.com
 
-export DATABASE_URL=postgres://production.cke8al3jes86.us-west-2.rds.amazonaws.com/my_db
+export DATABASE_URL='postgres://[username]:[password]@production.cke8al3jes86.us-west-2.rds.amazonaws.com:5432/my_db'
+
 in .bashrc
+export TAVILY_API_KEY
+export OPENAI_API_KEY
 
 add user to docker otherwise it won't see environment variables with sudo?
 docker-compose -f docker-compose-prod.yml build
@@ -56,3 +59,4 @@ do i need to build from cache?
 update docker compose to v.2.20.3 
 okay i ended up having it on ubuntu as 2.33 - 
 confused do i have to restart ssh-agent?
+set up ssh agent
