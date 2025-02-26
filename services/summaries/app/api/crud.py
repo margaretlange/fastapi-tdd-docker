@@ -8,7 +8,7 @@ from app.models.tortoise import TextSummary, User
 
 # summary crud
 async def post_summary(payload: SummaryPayloadSchema) -> int:
-    summary = TextSummary(query=payload.query, summary="")
+    summary = TextSummary(query=payload.query, summary="", user_id=payload.user_id)
     await summary.save()
     return summary.id
 

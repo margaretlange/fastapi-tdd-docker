@@ -5,8 +5,8 @@ from typing import Annotated
 from pydantic import BaseModel, Field, StringConstraints
 
 
-# summary schema
 class SummaryPayloadSchema(BaseModel):
+    user_id: int
     query: Annotated[
         str,
         Field(
@@ -18,13 +18,13 @@ class SummaryPayloadSchema(BaseModel):
 
 class SummaryResponseSchema(SummaryPayloadSchema):
     id: int
+    user_id: int
 
 
 class SummaryUpdatePayloadSchema(SummaryPayloadSchema):
     summary: str
 
 
-# user schema add here
 class UserPayloadSchema(BaseModel):
     username: Annotated[str, StringConstraints(max_length=50)]
 

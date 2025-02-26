@@ -15,3 +15,17 @@ The supporting backend should be a sql database, and managed via the tortoise or
 ##
 okay that was helpful
 can i add auth0 support? I think i need to look at auth0 example
+writing tests? hmm i want it to use the same test client as testdrivenio
+can i get copilot to split up files no
+I need to figure out how auth0 works with react before asking for an example
+
+https://www.tumblr.com/docs/en/api/v2#postspost-id---fetching-a-post-neue-post-format
+i could do users info
+
+Notes on nested resources (best practices):
+having to destroy migrations locally
+not sure how i will deal with this on rds though
+
+delete all text summaries related to user if user is deleted-does this work automatically with a tortoise decorator or anything?
+
+on_cascade i think might be automatic
