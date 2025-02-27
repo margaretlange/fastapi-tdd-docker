@@ -25,7 +25,7 @@ def test_create_summary(test_app, monkeypatch):
     monkeypatch.setattr(crud, "post_summary", mock_post)
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
     response = test_app.post(
-        "/users/1/summaries/",
+        "/users/1/summaries",
         data=json.dumps(test_request_payload),
     )
     assert response.status_code == 201
@@ -33,7 +33,7 @@ def test_create_summary(test_app, monkeypatch):
 
 
 def test_create_summaries_invalid_json(test_app):
-    response = test_app.post("/users/1/summaries/", data=json.dumps({}))
+    response = test_app.post("/users/1/summaries", data=json.dumps({}))
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -48,7 +48,7 @@ def test_create_summaries_invalid_json(test_app):
     }
 
     response = test_app.post(
-        "/users/1/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
+        "/users/1/summaries", data=json.dumps({"query": "Who was Charles Darwin"})
     )
     assert response.status_code == 422
     assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
@@ -71,7 +71,7 @@ def test_read_summary(test_app, monkeypatch):
         return test_data
 
     monkeypatch.setattr(crud, "get_summary", mock_get)
-    response = test_app.get("/users/1/summaries/1/")
+    response = test_app.get("/users/1/summaries/1")
     assert response.status_code == 200
     assert response.json() == test_data
 
@@ -82,7 +82,7 @@ def test_read_summary_incorrect_id(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "get_summary", mock_get)
 
-    response = test_app.get("/users/1/summaries/999/")
+    response = test_app.get("/users/1/summaries/999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
@@ -115,7 +115,7 @@ def test_read_all_summaries(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "get_all_summaries", mock_get_all)
 
-    response = test_app.get("/users/1/summaries/")
+    response = test_app.get("/users/1/summaries")
     assert response.status_code == 200
     assert response.json() == test_data
 
@@ -136,7 +136,7 @@ def test_remove_summary(test_app, monkeypatch):
         return test_data
 
     monkeypatch.setattr(crud, "delete_summary", mock_delete)
-    response = test_app.delete("/users/1/summaries/1/")
+    response = test_app.delete("/users/1/summaries/1")
     assert response.status_code == 200
     assert response.json() == test_data
 
@@ -147,7 +147,7 @@ def test_remove_summary_incorrect_id(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "get_summary", mock_get)
 
-    response = test_app.delete("/users/1/summaries/999/")
+    response = test_app.delete("/users/1/summaries/999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
@@ -171,7 +171,7 @@ def test_update_summary(test_app, monkeypatch):
     monkeypatch.setattr(crud, "put_summary", mock_put)
 
     response = test_app.put(
-        "/users/1/summaries/1/",
+        "/users/1/summaries/1",
         data=json.dumps(test_request_payload),
     )
     assert response.status_code == 200
@@ -268,6 +268,6 @@ def test_update_summary_invalid(
 
     monkeypatch.setattr(crud, "put_summary", mock_put)
 
-    response = test_app.put(f"/users/{user_id}/summaries/{summary_id}/", data=json.dumps(payload))
+    response = test_app.put(f"/users/{user_id}/summaries/{summary_id}", data=json.dumps(payload))
     assert response.status_code == status_code
     assert response.json()["detail"] == detail
