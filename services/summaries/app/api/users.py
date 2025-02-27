@@ -5,8 +5,13 @@ from fastapi import APIRouter, HTTPException, Path
 
 from app.api import crud
 from app.models.tortoise import UserSchema
+# import pdb
 
-from app.models.pydantic import UserResponseSchema, UserPayloadSchema  # isort:skip
+from app.models.pydantic import (  # isort:skip
+    UserResponseSchema,
+    UserPayloadSchema,
+)
+
 
 router = APIRouter()
 

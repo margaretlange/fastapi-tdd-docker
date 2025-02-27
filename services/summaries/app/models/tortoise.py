@@ -1,6 +1,7 @@
 # project/app/models/tortoise.py
 from tortoise import fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
+from tortoise import Tortoise
 
 
 class User(models.Model):
@@ -22,5 +23,6 @@ class TextSummary(models.Model):
         return self.query
 
 
+Tortoise.init_models(["app.models.tortoise"], "models")
 SummarySchema = pydantic_model_creator(TextSummary)  # new
 UserSchema = pydantic_model_creator(User)

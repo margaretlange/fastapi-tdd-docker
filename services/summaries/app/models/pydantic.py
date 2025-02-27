@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field, StringConstraints
 
 
 class SummaryPayloadSchema(BaseModel):
-    user_id: int
     query: Annotated[
         str,
         Field(

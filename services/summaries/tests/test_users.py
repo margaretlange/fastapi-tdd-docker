@@ -43,7 +43,6 @@ def test_read_user(test_app_with_db):
     user_id = response.json()["id"]
     response = test_app_with_db.get(f"/users/{user_id}/")
     assert response.status_code == 200
-
     response_dict = response.json()
     assert response_dict["id"] == user_id
     assert response_dict["username"] == "John Doe"

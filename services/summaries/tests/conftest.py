@@ -9,6 +9,8 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings
 from app.main import create_application  # updated
+from tortoise import Tortoise
+import pdb
 
 
 def get_settings_override():
@@ -33,6 +35,7 @@ def test_app_with_db():
     # set up
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
+    Tortoise.init_models(["app.models.tortoise"], "models")
     register_tortoise(
         app,
         db_url=os.environ.get("DATABASE_TEST_URL"),

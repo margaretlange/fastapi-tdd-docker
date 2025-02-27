@@ -10,32 +10,32 @@ from app.models.tortoise import TextSummary, User
 async def post_summary(payload: SummaryPayloadSchema) -> int:
     summary = TextSummary(query=payload.query, summary="", user_id=payload.user_id)
     await summary.save()
-    return summary.id
+    return summary.id, summary.user_id
 
 
-async def get_summary(id: int) -> Union[dict, None]:
-    summary = await TextSummary.filter(id=id).first().values()
+async def get_summary(id: int, user_id: int) -> Union[dict, None]:
+    summary = await TextSummary.filter(id=id, user_id=user_id).first().values()
     if summary:
         return summary
     return None
 
 
-async def get_all_summaries() -> List:
-    summaries = await TextSummary.all().values()
+async def get_all_summaries(user_id: int) -> List:
+    summaries = await TextSummary.all(user_id=user_id).values()
     return summaries
 
 
-async def delete_summary(id: int) -> int:
-    summary = await TextSummary.filter(id=id).first().delete()
+async def delete_summary(id: int, user_id: int) -> int:
+    summary = await TextSummary.filter(id=id, user_id=user_id).first().delete()
     return summary
 
 
-async def put_summary(id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
-    summary = await TextSummary.filter(id=id).update(
+async def put_summary(id: int, user_id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
+    summary = await TextSummary.filter(id=id, user_id=user_id).update(
         query=payload.query, summary=payload.summary
     )
     if summary:
-        updated_summary = await TextSummary.filter(id=id).first().values()
+        updated_summary = await TextSummary.filter(id=id, user_id=user_id).first().values()
         return updated_summary
     return None
 
