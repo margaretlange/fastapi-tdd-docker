@@ -1,4 +1,4 @@
-""" # project/tests/test_summaries.py
+# project/tests/test_summaries.py
 
 
 import json
@@ -6,16 +6,21 @@ import json
 import pytest
 
 from app.api import summaries
+import pdb
 
 
 def test_create_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, query):
+    def mock_generate_summary(summary_id, user_id, query):
         return None
-
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
-
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+
+    user_id = sample_user["id"]
+    response = test_app_with_db.post(
+        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
 
     assert response.status_code == 201
@@ -23,7 +28,10 @@ def test_create_summary(test_app_with_db, monkeypatch):
 
 
 def test_create_summaries_invalid_json(test_app):
-    response = test_app.post("/summaries/", data=json.dumps({}))
+    # pdb.set_trace()
+    user_id = 3
+    response = test_app.post(f"/users/{user_id}/summaries/", data=json.dumps({}))
+
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -36,24 +44,28 @@ def test_create_summaries_invalid_json(test_app):
             }
         ]
     }
-
     response = test_app.post(
-        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
+        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
     )
     assert response.status_code == 422
     assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
 
 
 def test_read_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, query):
+    def mock_generate_summary(summary_id, user_id, query):
         return None
-
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+    user_id = sample_user["id"]
+    response = test_app_with_db.post(
+        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
-    response = test_app_with_db.get(f"/summaries/{summary_id}/")
+    response = test_app_with_db.get(f"/users/{user_id}/summaries/{summary_id}/")
     assert response.status_code == 200
 
     response_dict = response.json()
@@ -64,11 +76,17 @@ def test_read_summary(test_app_with_db, monkeypatch):
 
 
 def test_read_summary_incorrect_id(test_app_with_db):
-    response = test_app_with_db.get("/summaries/999/")
+    response = test_app_with_db.post(
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+    user_id = sample_user["id"]
+
+    response = test_app_with_db.get(f"/users/{user_id}/summaries/999/")
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
-    response = test_app_with_db.get("/summaries/0/")
+    response = test_app_with_db.get(f"/users/{user_id}/summaries/0/")
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -85,17 +103,21 @@ def test_read_summary_incorrect_id(test_app_with_db):
 
 
 def test_read_all_summaries(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, query):
+    def mock_generate_summary(summary_id, user_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+    response = test_app_with_db.post(
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+    user_id = sample_user["id"]
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
-
-    response = test_app_with_db.get("/summaries/")
+    response = test_app_with_db.get(f"/users/{user_id}/summaries/")
     assert response.status_code == 200
 
     response_list = response.json()
@@ -103,21 +125,27 @@ def test_read_all_summaries(test_app_with_db, monkeypatch):
 
 
 def test_remove_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, query):
+    def mock_generate_summary(summary_id, user_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+    user_id = sample_user["id"]
+
+    response = test_app_with_db.post(
+        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Madonna?"})
     )
     summary_id = response.json()["id"]
-
-    response = test_app_with_db.delete(f"/summaries/{summary_id}/")
+    response = test_app_with_db.delete(f"/users/{user_id}/summaries/{summary_id}/")
     assert response.status_code == 200
-    assert response.json() == {"id": summary_id, "query": "Who was Charles Darwin?"}
+    assert response.json() == {"id": summary_id, "user_id": user_id, "query": "Who was Madonna?"}
 
 
+# got this far
 def test_remove_summary_incorrect_id(test_app_with_db):
     response = test_app_with_db.delete("/summaries/999/")
     assert response.status_code == 404
@@ -140,18 +168,23 @@ def test_remove_summary_incorrect_id(test_app_with_db):
 
 
 def test_update_summary(test_app_with_db, monkeypatch):
-    def mock_generate_summary(summary_id, query):
+    def mock_generate_summary(summary_id, user_id, query):
         return None
 
     monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+    response = test_app_with_db.post(
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+    user_id = sample_user["id"]
 
     response = test_app_with_db.post(
-        "/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
     )
     summary_id = response.json()["id"]
 
     response = test_app_with_db.put(
-        f"/summaries/{summary_id}/",
+        f"/users/{user_id}/summaries/{summary_id}/",
         data=json.dumps({"query": "Who was Charles Darwin?", "summary": "updated!"}),
     )
     assert response.status_code == 200
@@ -227,19 +260,15 @@ def test_update_summary(test_app_with_db, monkeypatch):
 def test_update_summary_invalid(
     test_app_with_db, summary_id, payload, status_code, detail
 ):
+    response = test_app_with_db.post(
+        "/users/", data=json.dumps({"username": "Jane Doe"})
+    )
+    sample_user = response.json()
+
+    user_id = sample_user['id']
     response = test_app_with_db.put(
-        f"/summaries/{summary_id}/", data=json.dumps(payload)
+        f"/users/{user_id}/summaries/{summary_id}/", data=json.dumps(payload)
     )
     assert response.status_code == status_code
     print(response.json()["detail"])
     assert response.json()["detail"] == detail
-
-
-def test_update_summary_invalid_query(test_app):
-    response = test_app.put(
-        "/summaries/1/",
-        data=json.dumps({"query": "Who was Charles Darwin", "summary": "updated!"}),
-    )
-    assert response.status_code == 422
-    assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
- """

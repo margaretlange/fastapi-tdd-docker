@@ -121,24 +121,29 @@ def test_read_all_summaries(test_app, monkeypatch):
 
 
 def test_remove_summary(test_app, monkeypatch):
+    user_info = {"username": "Jane Doe", "id": 1, "created_at": "2024-12-31T23:59:59Z"}
     test_data = {
         "id": 1,
-        "user_id": 1,
+        "user_id": user_info,
         "query": "Who was Charles Darwin?",
+        "summary": "A guy",
+        "created_at": datetime.datetime.now(datetime.UTC).strftime(
+                "%Y-%m-%dT%H:%M:%SZ"
+            ),
+
     }
 
     async def mock_get(id, user_id):
-        return test_data
-
+        return SummarySchema(**test_data)
     monkeypatch.setattr(crud, "get_summary", mock_get)
 
     async def mock_delete(id, user_id):
-        return test_data
+        return 1, 1
 
     monkeypatch.setattr(crud, "delete_summary", mock_delete)
     response = test_app.delete("/users/1/summaries/1/")
     assert response.status_code == 200
-    assert response.json() == test_data
+    assert response.json() == {'query': 'Who was Charles Darwin?', 'id': 1, 'user_id': 1}
 
 
 def test_remove_summary_incorrect_id(test_app, monkeypatch):

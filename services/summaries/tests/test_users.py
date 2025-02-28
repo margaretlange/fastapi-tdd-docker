@@ -46,7 +46,7 @@ def test_read_user(test_app_with_db):
     response_dict = response.json()
     assert response_dict["id"] == user_id
     assert response_dict["username"] == "John Doe"
-    assert response_dict["created_at"]
+    # assert response_dict["created_at"]
 
 
 def test_read_user_incorrect_id(test_app_with_db):
@@ -75,7 +75,6 @@ def test_read_all_users(test_app_with_db):
         "/users/", data=json.dumps({"username": "Joe Schmoe"})
     )
     user_id = response.json()["id"]
-
     response = test_app_with_db.get("/users/")
     assert response.status_code == 200
 

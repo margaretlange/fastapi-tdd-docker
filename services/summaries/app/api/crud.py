@@ -1,41 +1,49 @@
 # project/app/api/crud.py
 
-from typing import List, Union
+from typing import List, Union, Tuple
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
-from app.models.tortoise import TextSummary, User
+from app.models.tortoise import TextSummary, User, SummarySchema
+import pdb
 
 
 # summary crud
-async def post_summary(payload: SummaryPayloadSchema) -> int:
-    summary = TextSummary(query=payload.query, summary="", user_id=payload.user_id)
+async def post_summary(user_id: int, payload: SummaryPayloadSchema) -> Tuple[int]:
+    user = await User.get_or_none(id=user_id)
+    summary = TextSummary(query=payload.query, summary="", user_id=user)
     await summary.save()
-    return summary.id, summary.user_id
+    return summary.id, summary.user_id.id
 
 
 async def get_summary(id: int, user_id: int) -> Union[dict, None]:
-    summary = await TextSummary.filter(id=id, user_id=user_id).first().values()
+    user = await User.get_or_none(id=user_id)
+    summary = await TextSummary.filter(id=id, user_id=user).first()
     if summary:
-        return summary
+        response = await SummarySchema.from_tortoise_orm(summary)
+        return response
     return None
 
 
-async def get_all_summaries(user_id: int) -> List:
-    summaries = await TextSummary.all(user_id=user_id).values()
+async def get_all_summaries(user_id: int) -> List[SummarySchema]:
+    user = await User.get_or_none(id=user_id)
+    summaries = await TextSummary.filter(user_id=user).all()
+    summaries = [await SummarySchema.from_tortoise_orm(summary) for summary in summaries]
     return summaries
 
 
-async def delete_summary(id: int, user_id: int) -> int:
-    summary = await TextSummary.filter(id=id, user_id=user_id).first().delete()
-    return summary
+async def delete_summary(id: int, user_id: int) -> Tuple[int]:
+    user = await User.get_or_none(id=user_id)
+    await TextSummary.filter(id=id, user_id=user).first().delete()
+    return id, user.id
 
 
 async def put_summary(id: int, user_id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
-    summary = await TextSummary.filter(id=id, user_id=user_id).update(
+    user = await User.get_or_none(id=user_id)
+    summary = await TextSummary.filter(id=id, user_id=user).update(
         query=payload.query, summary=payload.summary
     )
     if summary:
-        updated_summary = await TextSummary.filter(id=id, user_id=user_id).first().values()
+        updated_summary = await TextSummary.filter(id=id, user_id=user).first().values()
         return updated_summary
     return None
 

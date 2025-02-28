@@ -25,6 +25,7 @@ async def create_summary(
     background_tasks: BackgroundTasks,
     user_id: int = Path(..., gt=0),
 ) -> SummaryResponseSchema:
+    # pdb.set_trace()
     summary_id, user_id = await crud.post_summary(user_id, payload)
 
     background_tasks.add_task(generate_summary, summary_id, user_id, str(payload.query))
@@ -55,8 +56,9 @@ async def delete_summary(
     if not summary:
         raise HTTPException(status_code=404, detail="Summary not found")
 
-    summary = await crud.delete_summary(id, user_id)
-    return summary
+    summary_id, user_id = await crud.delete_summary(id, user_id)
+    as_dict = {'id': summary_id, 'user_id': user_id, 'query': summary.query}
+    return as_dict
 
 
 @router.put("/{user_id}/summaries/{id}/", response_model=SummarySchema)
