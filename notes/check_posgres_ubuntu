@@ -31,6 +31,16 @@ terraform apply -replace="aws_db_instance.default"
 
 i think i should just be able to run upgrade on a new database if the pyproject.toml and migrations files are there
 try this out remotely
+yes this works, just make sure both those folders are present
 
-new address:
+note that I did learn that just erasing the RDS tables didn't work well.
 
+LOCAL POSTGRES
+psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
+
+sudo -u postgres psql
+CREATE DATABASE web_dev;
+GRANT ALL PRIVILEGES ON DATABASE web_dev TO maggie;
+psql -h localhost -U maggie -d web_dev
+
+postgres://maggie:[passwd]@host.docker.internal:5432/web_dev
