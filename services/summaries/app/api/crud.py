@@ -15,7 +15,7 @@ async def post_summary(user_id: int, payload: SummaryPayloadSchema) -> Tuple[int
     return summary.id, summary.user_id.id
 
 
-async def get_summary(id: int, user_id: int) -> Union[dict, None]:
+async def get_summary(id: int, user_id: int) -> Union[SummarySchema, None]:
     user = await User.get_or_none(id=user_id)
     summary = await TextSummary.filter(id=id, user_id=user).first()
     if summary:
@@ -37,14 +37,15 @@ async def delete_summary(id: int, user_id: int) -> Tuple[int]:
     return id, user.id
 
 
-async def put_summary(id: int, user_id: int, payload: SummaryPayloadSchema) -> Union[dict, None]:
+async def put_summary(id: int, user_id: int, payload: SummaryPayloadSchema) -> Union[SummarySchema, None]:
     user = await User.get_or_none(id=user_id)
     summary = await TextSummary.filter(id=id, user_id=user).update(
         query=payload.query, summary=payload.summary
     )
     if summary:
-        updated_summary = await TextSummary.filter(id=id, user_id=user).first().values()
-        return updated_summary
+        updated_summary = await TextSummary.filter(id=id, user_id=user).first()
+        response = await SummarySchema.from_tortoise_orm(updated_summary)
+        return response
     return None
 
 
