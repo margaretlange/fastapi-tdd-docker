@@ -17,3 +17,20 @@ make sure the DATABASE_URL is well formed. that was my issue
 here is the correct format:
 'postgres://[user]:[password]@production.cke8al3jes86.us-west-2.rds.amazonaws.com:5432/my_db'
 
+something off with migrations
+
+I need to figure out how to sync migrations
+-- kill rds then restart
+-- make sure problem is with migrations and not rds treatment of foreign keys
+
+"aws_db_instance" "default"
+
+terraform plan -replace="aws_db_instance.default"
+
+terraform apply -replace="aws_db_instance.default"
+
+i think i should just be able to run upgrade on a new database if the pyproject.toml and migrations files are there
+try this out remotely
+
+new address:
+
