@@ -21,3 +21,5 @@ but now time to sign up for auth0
 AUTH0_DOMAIN
 AUTH0_CLIENT_ID
 AUTH0_CLIENT_SECRET
+
+auth0 both api and application. trying to figure out how to develop without calling them a zillion times

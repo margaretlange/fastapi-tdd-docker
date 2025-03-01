@@ -20,6 +20,4 @@ async def pong(settings: Settings = Depends(get_settings)):
 
 @router.get("/ping/private", dependencies=[Depends(validate_token)])
 async def pongprivate():
-    return {
-        "ping": "This is a private endpoint"
-    }
+    return {"ping": "This is a private endpoint"}

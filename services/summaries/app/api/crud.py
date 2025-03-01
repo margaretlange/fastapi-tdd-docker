@@ -4,7 +4,7 @@ from typing import List, Union, Tuple
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
 from app.models.tortoise import TextSummary, User, SummarySchema
-import pdb
+# import pdb
 
 
 # summary crud
@@ -27,7 +27,9 @@ async def get_summary(id: int, user_id: int) -> Union[SummarySchema, None]:
 async def get_all_summaries(user_id: int) -> List[SummarySchema]:
     user = await User.get_or_none(id=user_id)
     summaries = await TextSummary.filter(user_id=user).all()
-    summaries = [await SummarySchema.from_tortoise_orm(summary) for summary in summaries]
+    summaries = [
+        await SummarySchema.from_tortoise_orm(summary) for summary in summaries
+    ]
     return summaries
 
 
@@ -37,7 +39,9 @@ async def delete_summary(id: int, user_id: int) -> Tuple[int]:
     return id, user.id
 
 
-async def put_summary(id: int, user_id: int, payload: SummaryPayloadSchema) -> Union[SummarySchema, None]:
+async def put_summary(
+    id: int, user_id: int, payload: SummaryPayloadSchema
+) -> Union[SummarySchema, None]:
     user = await User.get_or_none(id=user_id)
     summary = await TextSummary.filter(id=id, user_id=user).update(
         query=payload.query, summary=payload.summary

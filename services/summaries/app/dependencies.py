@@ -7,6 +7,7 @@ from app.json_web_token import JsonWebToken
 def validate_token(token: str = Depends(get_bearer_token)):
     return JsonWebToken(token).validate()
 
+
 # this worked
 # def validate_token():
 #    return True

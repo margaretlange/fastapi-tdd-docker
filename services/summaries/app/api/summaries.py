@@ -14,7 +14,7 @@ from app.models.pydantic import (  # isort:skip
     SummaryResponseSchema,
     SummaryUpdatePayloadSchema,
 )
-import pdb
+# import pdb
 
 
 @router.post(
@@ -57,7 +57,7 @@ async def delete_summary(
         raise HTTPException(status_code=404, detail="Summary not found")
 
     summary_id, user_id = await crud.delete_summary(id, user_id)
-    as_dict = {'id': summary_id, 'user_id': user_id, 'query': summary.query}
+    as_dict = {"id": summary_id, "user_id": user_id, "query": summary.query}
     return as_dict
 
 
