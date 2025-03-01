@@ -5,32 +5,37 @@ import json
 
 import pytest
 
-from app.api import summaries
-import pdb
+from app.api import users 
+# import pdb
 
 
-def test_create_summary(test_app_with_db, monkeypatch):
+def test_create_summary(test_app_with_db, monkeypatch, auth_header):
     def mock_generate_summary(summary_id, user_id, query):
         return None
-    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
+    monkeypatch.setattr(users, "generate_summary", mock_generate_summary)
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
 
     user_id = sample_user["id"]
     response = test_app_with_db.post(
-        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        f"/users/{user_id}/summaries/",
+        data=json.dumps({"query": "Who was Charles Darwin?"}),
+        headers=auth_header,
     )
 
     assert response.status_code == 201
     assert response.json()["query"] == "Who was Charles Darwin?"
 
 
-def test_create_summaries_invalid_json(test_app):
+def test_create_summaries_invalid_json(test_app, auth_header):
     # pdb.set_trace()
     user_id = 3
-    response = test_app.post(f"/users/{user_id}/summaries/", data=json.dumps({}))
+    response = test_app.post(
+        f"/users/{user_id}/summaries/", data=json.dumps({}), headers=auth_header
+    )
 
     assert response.status_code == 422
     assert response.json() == {
@@ -45,27 +50,32 @@ def test_create_summaries_invalid_json(test_app):
         ]
     }
     response = test_app.post(
-        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin"})
+        f"/users/{user_id}/summaries/",
+        data=json.dumps({"query": "Who was Charles Darwin"}), headers=auth_header
     )
     assert response.status_code == 422
     assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
 
 
-def test_read_summary(test_app_with_db, monkeypatch):
+def test_read_summary(test_app_with_db, monkeypatch, auth_header):
     def mock_generate_summary(summary_id, user_id, query):
         return None
-    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+
+    monkeypatch.setattr(users, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
     user_id = sample_user["id"]
     response = test_app_with_db.post(
-        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        f"/users/{user_id}/summaries/",
+        data=json.dumps({"query": "Who was Charles Darwin?"}), headers=auth_header
     )
     summary_id = response.json()["id"]
-    response = test_app_with_db.get(f"/users/{user_id}/summaries/{summary_id}/")
+    response = test_app_with_db.get(
+        f"/users/{user_id}/summaries/{summary_id}/", headers=auth_header
+    )
     assert response.status_code == 200
 
     response_dict = response.json()
@@ -75,18 +85,22 @@ def test_read_summary(test_app_with_db, monkeypatch):
     assert response_dict["created_at"]
 
 
-def test_read_summary_incorrect_id(test_app_with_db):
+def test_read_summary_incorrect_id(test_app_with_db, auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
     user_id = sample_user["id"]
 
-    response = test_app_with_db.get(f"/users/{user_id}/summaries/999/")
+    response = test_app_with_db.get(
+        f"/users/{user_id}/summaries/999/", headers=auth_header
+    )
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
-    response = test_app_with_db.get(f"/users/{user_id}/summaries/0/")
+    response = test_app_with_db.get(
+        f"/users/{user_id}/summaries/0/", headers=auth_header
+    )
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -102,61 +116,75 @@ def test_read_summary_incorrect_id(test_app_with_db):
     }
 
 
-def test_read_all_summaries(test_app_with_db, monkeypatch):
+def test_read_all_summaries(test_app_with_db, monkeypatch, auth_header):
     def mock_generate_summary(summary_id, user_id, query):
         return None
 
-    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+    monkeypatch.setattr(users, "generate_summary", mock_generate_summary)
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
     user_id = sample_user["id"]
 
     response = test_app_with_db.post(
-        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        f"/users/{user_id}/summaries/",
+        data=json.dumps({"query": "Who was Charles Darwin?"}),
+        headers=auth_header,
     )
     summary_id = response.json()["id"]
-    response = test_app_with_db.get(f"/users/{user_id}/summaries/")
+    response = test_app_with_db.get(f"/users/{user_id}/summaries/", headers=auth_header)
     assert response.status_code == 200
 
     response_list = response.json()
     assert len(list(filter(lambda d: d["id"] == summary_id, response_list))) == 1
 
 
-def test_remove_summary(test_app_with_db, monkeypatch):
+def test_remove_summary(test_app_with_db, monkeypatch, auth_header):
     def mock_generate_summary(summary_id, user_id, query):
         return None
 
-    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+    monkeypatch.setattr(users, "generate_summary", mock_generate_summary)
 
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
     user_id = sample_user["id"]
 
     response = test_app_with_db.post(
-        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Madonna?"})
+        f"/users/{user_id}/summaries/",
+        data=json.dumps({"query": "Who was Madonna?"}),
+        headers=auth_header,
     )
     summary_id = response.json()["id"]
-    response = test_app_with_db.delete(f"/users/{user_id}/summaries/{summary_id}/")
+    response = test_app_with_db.delete(
+        f"/users/{user_id}/summaries/{summary_id}/", headers=auth_header
+    )
     assert response.status_code == 200
-    assert response.json() == {"id": summary_id, "user_id": user_id, "query": "Who was Madonna?"}
+    assert response.json() == {
+        "id": summary_id,
+        "user_id": user_id,
+        "query": "Who was Madonna?",
+    }
 
 
-def test_remove_summary_incorrect_id(test_app_with_db):
+def test_remove_summary_incorrect_id(test_app_with_db, auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
     user_id = sample_user["id"]
 
-    response = test_app_with_db.delete(f"/users/{user_id}/summaries/999/")
+    response = test_app_with_db.delete(
+        f"/users/{user_id}/summaries/999/", headers=auth_header
+    )
     assert response.status_code == 404
     assert response.json()["detail"] == "Summary not found"
 
-    response = test_app_with_db.delete(f"/users/{user_id}/summaries/0/")
+    response = test_app_with_db.delete(
+        f"/users/{user_id}/summaries/0/", headers=auth_header
+    )
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -172,24 +200,27 @@ def test_remove_summary_incorrect_id(test_app_with_db):
     }
 
 
-def test_update_summary(test_app_with_db, monkeypatch):
+def test_update_summary(test_app_with_db, monkeypatch, auth_header):
     def mock_generate_summary(summary_id, user_id, query):
         return None
 
-    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
+    monkeypatch.setattr(users, "generate_summary", mock_generate_summary)
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
     user_id = sample_user["id"]
 
     response = test_app_with_db.post(
-        f"/users/{user_id}/summaries/", data=json.dumps({"query": "Who was Charles Darwin?"})
+        f"/users/{user_id}/summaries/",
+        data=json.dumps({"query": "Who was Charles Darwin?"}),
+        headers=auth_header,
     )
     summary_id = response.json()["id"]
     response = test_app_with_db.put(
         f"/users/{user_id}/summaries/{summary_id}/",
         data=json.dumps({"query": "Who was Charles Darwin?", "summary": "updated!"}),
+        headers=auth_header,
     )
     assert response.status_code == 200
 
@@ -262,16 +293,18 @@ def test_update_summary(test_app_with_db, monkeypatch):
     ],
 )
 def test_update_summary_invalid(
-    test_app_with_db, summary_id, payload, status_code, detail
+    test_app_with_db, auth_header, summary_id, payload, status_code, detail
 ):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     sample_user = response.json()
 
-    user_id = sample_user['id']
+    user_id = sample_user["id"]
     response = test_app_with_db.put(
-        f"/users/{user_id}/summaries/{summary_id}/", data=json.dumps(payload)
+        f"/users/{user_id}/summaries/{summary_id}/",
+        data=json.dumps(payload),
+        headers=auth_header,
     )
     assert response.status_code == status_code
     print(response.json()["detail"])

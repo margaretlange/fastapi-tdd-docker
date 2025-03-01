@@ -9,7 +9,6 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings, settings
 from app.main import create_application  # updated
-from app import dependencies
 
 
 def get_settings_override():

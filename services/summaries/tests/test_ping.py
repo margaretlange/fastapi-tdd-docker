@@ -1,8 +1,5 @@
 # project/tests/test_ping.py
 from app.config import settings
-from fastapi import APIRouter, Depends
-from app import dependencies, authorization_header_elements
-import pdb
 
 
 def test_ping(test_app):
@@ -22,11 +19,10 @@ def test_pongprivate(test_app):
 
 
 # not working
-#def mock_get_bearer_token(header):
+# def mock_get_bearer_token(header):
 #        return "hello"
 #    monkeypatch.setattr(authorization_header_elements, "get_bearer_token", mock_get_bearer_token)
 #    pdb.set_trace()
 #    def mock_validate_token(token):
 #        return True
 #    monkeypatch.setattr(dependencies, "validate_token", mock_validate_token)
-
