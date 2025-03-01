@@ -16,7 +16,7 @@ class Settings(BaseSettings):
 
     auth0_audience: str
     auth0_domain: str
-    client_origin_url: str
+    # client_origin_url: str
 
     jwt_test_token: str
 

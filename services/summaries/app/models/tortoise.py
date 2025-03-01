@@ -1,7 +1,6 @@
 # project/app/models/tortoise.py
-from tortoise import fields, models
+from tortoise import Tortoise, fields, models
 from tortoise.contrib.pydantic import pydantic_model_creator
-from tortoise import Tortoise
 
 
 class User(models.Model):

@@ -11,7 +11,7 @@ def test_ping(test_app):
 def test_pongprivate(test_app):
     auth_headers = {
         "Authorization": f"Bearer {settings.jwt_test_token}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     response = test_app.get("/ping/private", headers=auth_headers)
     assert response.status_code == 200

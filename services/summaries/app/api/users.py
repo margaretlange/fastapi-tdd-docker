@@ -1,15 +1,19 @@
 # project/app/api/users.py
 from typing import List
-from fastapi import APIRouter, HTTPException, Path, BackgroundTasks
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Path
+
+from app.api import crud
+from app.dependencies import validate_token
+from app.models.tortoise import SummarySchema
 from app.summarizer import generate_summary
+
 from app.models.pydantic import (  # isort:skip
     SummaryPayloadSchema,
     SummaryResponseSchema,
-    SummaryUpdatePayloadSchema
+    SummaryUpdatePayloadSchema,
 )
-from app.models.tortoise import SummarySchema
 
-from app.api import crud
 
 # import pdb
 
@@ -17,8 +21,6 @@ from app.models.pydantic import (  # isort:skip
     UserResponseSchema,
     UserPayloadSchema,
 )
-from app.dependencies import validate_token
-from fastapi import Depends
 
 router = APIRouter()
 

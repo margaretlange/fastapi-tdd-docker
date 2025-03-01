@@ -42,7 +42,7 @@ def test_app_with_db():
 def auth_header():
     auth_header = {
         "Authorization": f"Bearer {settings.jwt_test_token}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     return auth_header
 

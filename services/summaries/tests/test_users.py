@@ -1,6 +1,7 @@
 # project/tests/test_users.py
 
 import json
+
 # import pdb
 
 
@@ -27,7 +28,9 @@ def test_create_users_invalid_json(test_app, auth_header):
         ]
     }
 
-    response = test_app.post("/users/", headers=auth_header, data=json.dumps({"username": "a" * 51}))
+    response = test_app.post(
+        "/users/", headers=auth_header, data=json.dumps({"username": "a" * 51})
+    )
     assert response.status_code == 422
     assert (
         response.json()["detail"][0]["msg"]

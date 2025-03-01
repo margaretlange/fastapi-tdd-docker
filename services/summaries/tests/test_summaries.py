@@ -5,7 +5,8 @@ import json
 
 import pytest
 
-from app.api import users 
+from app.api import users
+
 # import pdb
 
 
@@ -51,7 +52,8 @@ def test_create_summaries_invalid_json(test_app, auth_header):
     }
     response = test_app.post(
         f"/users/{user_id}/summaries/",
-        data=json.dumps({"query": "Who was Charles Darwin"}), headers=auth_header
+        data=json.dumps({"query": "Who was Charles Darwin"}),
+        headers=auth_header,
     )
     assert response.status_code == 422
     assert response.json()["detail"][0]["msg"] == "String should match pattern '.*\\?$'"
@@ -70,7 +72,8 @@ def test_read_summary(test_app_with_db, monkeypatch, auth_header):
     user_id = sample_user["id"]
     response = test_app_with_db.post(
         f"/users/{user_id}/summaries/",
-        data=json.dumps({"query": "Who was Charles Darwin?"}), headers=auth_header
+        data=json.dumps({"query": "Who was Charles Darwin?"}),
+        headers=auth_header,
     )
     summary_id = response.json()["id"]
     response = test_app_with_db.get(

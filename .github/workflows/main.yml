@@ -51,6 +51,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull image
         run: docker pull ${{ env.API_IMAGE }}:latest || true
+      - name: Get Auth0 Token
+        id: get_auth0_token
+        run: |
+          response=$(curl --request POST \
+          --url https://dev-lhn1ufqgkgz8lk5w.us.auth0.com/oauth/token \
+          --header 'content-type: application/json' \
+          --data '{
+            "client_id": "${{ secrets.AUTH0_CLIENT_ID }}",
+            "client_secret": "${{ secrets.AUTH0_CLIENT_SECRET }}",
+            "audience": "${{ secrets.AUTH0_AUDIENCE }}",
+            "grant_type": "client_credentials"
+          }')
+          echo "::set-output name=access_token::$(echo $response | jq -r .access_token)"
+      - name: Set Auth0 Token as Environment Variable
+        run: echo "AUTH0_ACCESS_TOKEN=${{ steps.get_auth0_token.outputs.access_token }}" >> $GITHUB_ENV
       - name: Run container
         run: |
           docker run \
@@ -60,6 +75,9 @@ jobs:
             -e ENVIRONMENT=dev \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
+            -e AUTH0_AUDIENCE=${{ secrets.AUTH0_AUDIENCE }} \
+            -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
+            -e JWT_TEST_TOKEN=$${{ env.AUTH0_ACCESS_TOKEN }} \
             -e DATABASE_URL=sqlite://sqlite.db \
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \

@@ -1,9 +1,10 @@
 # project/app/api/crud.py
 
-from typing import List, Union, Tuple
+from typing import List, Tuple, Union
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
-from app.models.tortoise import TextSummary, User, SummarySchema
+from app.models.tortoise import SummarySchema, TextSummary, User
+
 # import pdb
 
 
