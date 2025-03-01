@@ -3,7 +3,7 @@
 import logging
 from functools import lru_cache
 
-from pydantic import AnyUrl
+from pydantic import AnyUrl, validator
 from pydantic_settings import BaseSettings
 
 log = logging.getLogger("uvicorn")
@@ -14,8 +14,23 @@ class Settings(BaseSettings):
     testing: bool = 0
     database_url: AnyUrl = None
 
+    auth0_audience: str
+    auth0_domain: str
+    client_origin_url: str
+
+    jwt_test_token: str
+
+    @classmethod
+    @validator("client_origin_url", "auth0_audience", "auth0_domain")
+    def check_not_empty(cls, v):
+        assert v != "", f"{v} is not defined"
+        return v
+
 
 @lru_cache()
 def get_settings() -> BaseSettings:
     log.info("Loading config settings from the environment...")
     return Settings()
+
+
+settings = get_settings()

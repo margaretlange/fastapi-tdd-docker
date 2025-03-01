@@ -1,20 +1,19 @@
 # project/tests/test_users.py
 
-
 import json
-import pdb
+# import pdb
 
 
-def test_create_user(test_app_with_db):
+def test_create_user(test_app_with_db, auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"})
+        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=auth_header
     )
     assert response.status_code == 201
     assert response.json()["username"] == "Jane Doe"
 
 
-def test_create_users_invalid_json(test_app):
-    response = test_app.post("/users/", data=json.dumps({}))
+def test_create_users_invalid_json(test_app, auth_header):
+    response = test_app.post("/users/", data=json.dumps({}), headers=auth_header)
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -28,7 +27,7 @@ def test_create_users_invalid_json(test_app):
         ]
     }
 
-    response = test_app.post("/users/", data=json.dumps({"username": "a" * 51}))
+    response = test_app.post("/users/", headers=auth_header, data=json.dumps({"username": "a" * 51}))
     assert response.status_code == 422
     assert (
         response.json()["detail"][0]["msg"]
@@ -36,12 +35,12 @@ def test_create_users_invalid_json(test_app):
     )
 
 
-def test_read_user(test_app_with_db):
+def test_read_user(test_app_with_db, auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "John Doe"})
+        "/users/", data=json.dumps({"username": "John Doe"}), headers=auth_header
     )
     user_id = response.json()["id"]
-    response = test_app_with_db.get(f"/users/{user_id}/")
+    response = test_app_with_db.get(f"/users/{user_id}/", headers=auth_header)
     assert response.status_code == 200
     response_dict = response.json()
     assert response_dict["id"] == user_id
@@ -49,12 +48,12 @@ def test_read_user(test_app_with_db):
     # assert response_dict["created_at"]
 
 
-def test_read_user_incorrect_id(test_app_with_db):
-    response = test_app_with_db.get("/users/999/")
+def test_read_user_incorrect_id(test_app_with_db, auth_header):
+    response = test_app_with_db.get("/users/999/", headers=auth_header)
     assert response.status_code == 404
     assert response.json()["detail"] == "user not found"
 
-    response = test_app_with_db.get("/users/0/")
+    response = test_app_with_db.get("/users/0/", headers=auth_header)
     assert response.status_code == 422
     assert response.json() == {
         "detail": [
@@ -70,35 +69,35 @@ def test_read_user_incorrect_id(test_app_with_db):
     }
 
 
-def test_read_all_users(test_app_with_db):
+def test_read_all_users(test_app_with_db, auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Joe Schmoe"})
+        "/users/", data=json.dumps({"username": "Joe Schmoe"}), headers=auth_header
     )
     user_id = response.json()["id"]
-    response = test_app_with_db.get("/users/")
+    response = test_app_with_db.get("/users/", headers=auth_header)
     assert response.status_code == 200
 
     response_list = response.json()
     assert len(list(filter(lambda d: d["id"] == user_id, response_list))) == 1
 
 
-def test_remove_user(test_app_with_db):
+def test_remove_user(test_app_with_db, auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "John Smith"})
+        "/users/", data=json.dumps({"username": "John Smith"}), headers=auth_header
     )
     user_id = response.json()["id"]
 
-    response = test_app_with_db.delete(f"/users/{user_id}/")
+    response = test_app_with_db.delete(f"/users/{user_id}/", headers=auth_header)
     assert response.status_code == 200
     assert response.json() == {"id": user_id, "username": "John Smith"}
 
 
-def test_remove_user_incorrect_id(test_app_with_db):
-    response = test_app_with_db.delete("/users/999/")
+def test_remove_user_incorrect_id(test_app_with_db, auth_header):
+    response = test_app_with_db.delete("/users/999/", headers=auth_header)
     assert response.status_code == 404
     assert response.json()["detail"] == "user not found"
 
-    response = test_app_with_db.delete("/users/0/")
+    response = test_app_with_db.delete("/users/0/", headers=auth_header)
     assert response.status_code == 422
     assert response.json() == {
         "detail": [

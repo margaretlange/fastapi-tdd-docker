@@ -4,19 +4,19 @@ import pdb
 from fastapi import APIRouter, HTTPException, Path
 
 from app.api import crud
-from app.models.tortoise import UserSchema
 # import pdb
 
 from app.models.pydantic import (  # isort:skip
     UserResponseSchema,
     UserPayloadSchema,
 )
-
+from app.dependencies import validate_token
+from fastapi import Depends
 
 router = APIRouter()
 
 
-@router.post("/", response_model=UserResponseSchema, status_code=201)
+@router.post("/", response_model=UserResponseSchema, status_code=201, dependencies=[Depends(validate_token)])
 async def create_user(payload: UserPayloadSchema) -> UserResponseSchema:
     user_id = await crud.post_user(payload)
 
@@ -24,7 +24,7 @@ async def create_user(payload: UserPayloadSchema) -> UserResponseSchema:
     return response_object
 
 
-@router.get("/{id}/", response_model=UserResponseSchema)
+@router.get("/{id}/", response_model=UserResponseSchema, dependencies=[Depends(validate_token)])
 async def read_user(id: int = Path(..., gt=0)) -> UserResponseSchema:
     user = await crud.get_user(id)
     if not user:
@@ -33,7 +33,7 @@ async def read_user(id: int = Path(..., gt=0)) -> UserResponseSchema:
     return response_object
 
 
-@router.get("/", response_model=List[UserResponseSchema])
+@router.get("/", response_model=List[UserResponseSchema], dependencies=[Depends(validate_token)])
 async def read_all_users() -> List[UserResponseSchema]:
     users = await crud.get_all_users()
     if len(users) == 0:
@@ -41,7 +41,8 @@ async def read_all_users() -> List[UserResponseSchema]:
     users = [{"id": user['id'], "username": user['username']} for user in users]
     return users
 
-@router.delete("/{id}/", response_model=UserResponseSchema)
+
+@router.delete("/{id}/", response_model=UserResponseSchema, dependencies=[Depends(validate_token)])
 async def delete_user(id: int = Path(..., gt=0)) -> UserResponseSchema:
     user = await crud.get_user(id)
     if not user:

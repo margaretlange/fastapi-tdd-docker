@@ -7,10 +7,9 @@ import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
-from app.config import Settings, get_settings
+from app.config import Settings, get_settings, settings
 from app.main import create_application  # updated
-from tortoise import Tortoise
-import pdb
+from app import dependencies
 
 
 def get_settings_override():
@@ -19,20 +18,14 @@ def get_settings_override():
 
 @pytest.fixture(scope="module")
 def test_app():
-    # set up
     app = create_application()  # new
     app.dependency_overrides[get_settings] = get_settings_override
     with TestClient(app) as test_client:  # updated
-        # testing
         yield test_client
 
-    # tear down
 
-
-# new
 @pytest.fixture(scope="module")
 def test_app_with_db():
-    # set up
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
     register_tortoise(
@@ -43,7 +36,20 @@ def test_app_with_db():
         add_exception_handlers=True,
     )
     with TestClient(app) as test_client:
-        # testing
         yield test_client
 
-    # tear down
+
+@pytest.fixture(scope="module")
+def auth_header():
+    auth_header = {
+        "Authorization": f"Bearer {settings.jwt_test_token}",
+        "Content-Type": "application/json"
+    }
+    return auth_header
+
+
+# @pytest.fixture
+# def mock_validate_token(monkeypatch):
+#    def mock_inner(*args, **kwargs):
+#        return True
+#    monkeypatch.setattr(dependencies, "validate_token", mock_inner)

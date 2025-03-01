@@ -27,6 +27,8 @@ docker-compose exec web python -m pytest -l
 # list the 2 slowest tests
 docker-compose exec web python -m pytest --durations=2
 
+
+docker-compose exec web python -m pytest tests/test_ping.py::test_pongprivate
 # linting
 
 # migrate db (file api only)
