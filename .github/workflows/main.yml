@@ -51,11 +51,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull image
         run: docker pull ${{ env.API_IMAGE }}:latest || true
-      - name: Get Auth0 Token
-        id: get_auth0_token
-        run: |
-          token=`$GITHUB_WORKSPACE/.github/request_auth0_token.sh ${{ secrets.AUTH0_DOMAIN }} ${{ secrets.AUTH0_CLIENT_ID }} {{ secrets.AUTH0_CLIENT_SECRET }} {{ secrets.AUTH0_AUDIENCE }}`
-          echo "AUTH0_ACCESS_TOKEN=$token" >> $GITHUB_ENV
       - name: Run container
         run: |
           docker run \
@@ -67,7 +62,7 @@ jobs:
             -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
             -e AUTH0_AUDIENCE=${{ secrets.AUTH0_AUDIENCE }} \
             -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
-            -e JWT_TEST_TOKEN=$${{ env.AUTH0_ACCESS_TOKEN }} \
+            -e JWT_TEST_TOKEN=$${{ secrets.AUTH0_ACCESS_TOKEN }} \
             -e DATABASE_URL=sqlite://sqlite.db \
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
             -p 5003:8765 \
