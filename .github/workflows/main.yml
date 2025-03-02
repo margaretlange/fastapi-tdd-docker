@@ -62,7 +62,7 @@ jobs:
             -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
             -e DATABASE_URL=sqlite://sqlite.db \
             -e DATABASE_TEST_URL=sqlite://sqlite.db \
-            -e AUTH0_AUDIENCE=https://hello-world.example.com \
+            -e AUTH0_AUDIENCE=${{ secrets.AUTH0_AUDIENCE }} \
             -p 5003:8765 \
             ${{ env.API_IMAGE }}:latest
       - name: Pytest
