@@ -54,8 +54,8 @@ jobs:
       - name: Get Auth0 Token
         id: get_auth0_token
         run: |
-          token=`./request_auth0_token.sh ${{ secrets.AUTH0_DOMAIN }} ${{ secrets.AUTH0_CLIENT_ID }} {{ secrets.AUTH0_CLIENT_SECRET }} {{ secrets.AUTH0_AUDIENCE }}`
-          echo "AUTH0_ACCESS_TOKEN=$token" >> $GITHUB_ENV    
+          token=`$GITHUB_WORKSPACE/.github/request_auth0_token.sh ${{ secrets.AUTH0_DOMAIN }} ${{ secrets.AUTH0_CLIENT_ID }} {{ secrets.AUTH0_CLIENT_SECRET }} {{ secrets.AUTH0_AUDIENCE }}`
+          echo "AUTH0_ACCESS_TOKEN=$token" >> $GITHUB_ENV
       - name: Run container
         run: |
           docker run \
