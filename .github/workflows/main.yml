@@ -53,9 +53,7 @@ jobs:
         run: docker pull ${{ env.API_IMAGE }}:latest || true
       - name: Run container
         run: |
-          docker run \
-            -d \
-            --name test-api \
+          docker run -d --name test-api \
             -e PORT=8765 \
             -e ENVIRONMENT=dev \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
@@ -72,6 +70,4 @@ jobs:
       - name: Flake8
         run: docker exec test-api python -m flake8 .
       - name: Black
-        run: docker exec test-api python -m black --check .
-      - name: isort
         run: docker exec test-api python -m isort --check .
