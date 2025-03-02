@@ -3,8 +3,7 @@ from dataclasses import dataclass
 import jwt
 
 from app.config import settings
-from app.custom_exceptions import (BadCredentialsException,
-                                   UnableCredentialsException)
+from app.custom_exceptions import BadCredentialsException, UnableCredentialsException
 
 
 @dataclass

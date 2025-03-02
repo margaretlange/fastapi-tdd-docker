@@ -54,19 +54,8 @@ jobs:
       - name: Get Auth0 Token
         id: get_auth0_token
         run: |
-          response=$(curl --request POST \
-          --url https://dev-lhn1ufqgkgz8lk5w.us.auth0.com/oauth/token \
-          --header 'content-type: application/json' \
-          --data '{
-            "client_id": "${{ secrets.AUTH0_CLIENT_ID }}",
-            "client_secret": "${{ secrets.AUTH0_CLIENT_SECRET }}",
-            "audience": "${{ secrets.AUTH0_AUDIENCE }}",
-            "grant_type": "client_credentials"
-          }')
-          echo $response
-          echo "::set-output name=access_token::$(echo $response | jq -r .access_token)"
-      - name: Set Auth0 Token as Environment Variable
-        run: echo "AUTH0_ACCESS_TOKEN=${{ steps.get_auth0_token.outputs.access_token }}" >> $GITHUB_ENV
+          token=`./request_auth0_token.sh ${{ secrets.AUTH0_DOMAIN }} ${{ secrets.AUTH0_CLIENT_ID }} {{ secrets.AUTH0_CLIENT_SECRET }} {{ secrets.AUTH0_AUDIENCE }}`
+          echo "AUTH0_ACCESS_TOKEN=$token" >> $GITHUB_ENV    
       - name: Run container
         run: |
           docker run \
