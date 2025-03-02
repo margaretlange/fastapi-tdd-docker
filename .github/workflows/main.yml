@@ -33,9 +33,7 @@ jobs:
           ssh: |
             default=${{ env.SSH_AUTH_SOCK }}
           tags: ${{ env.API_IMAGE }}:latest
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          push: true
           file: ./services/summaries/Dockerfile.prod
           context: ./services/summaries
   # test:
