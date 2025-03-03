@@ -7,11 +7,7 @@ import json
 import pytest
 
 from app.api import crud, users
-
-# from app.api import users, crud
 from app.models.tortoise import SummarySchema
-
-# import pdb
 
 
 def test_create_summary(test_app, monkeypatch, auth_header):
