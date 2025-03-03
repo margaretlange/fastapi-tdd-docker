@@ -4,20 +4,25 @@
 import os
 
 import pytest
+from auth0.authentication import GetToken
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings, settings
 from app.main import create_application  # updated
-from auth0.authentication import GetToken
+
 # import pdb
 
 
 def get_set_token():
     if not settings.jwt_test_token:
-        token = GetToken(settings.auth0_domain, settings.auth0_client_id, client_secret=settings.auth0_client_secret)
+        token = GetToken(
+            settings.auth0_domain,
+            settings.auth0_client_id,
+            client_secret=settings.auth0_client_secret,
+        )
         token = token.client_credentials(settings.auth0_audience)
-        token = token['access_token']
+        token = token["access_token"]
         settings.jwt_test_token = token
         return token
     return settings.jwt_test_token

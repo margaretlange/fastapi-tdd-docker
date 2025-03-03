@@ -34,7 +34,6 @@ jobs:
             default=${{ env.SSH_AUTH_SOCK }}
           tags: ${{ env.API_IMAGE }}:latest
           push: true
-          from_cache: true
           cache-from: ${{ env.API_IMAGE }}:latest
           file: ./services/summaries/Dockerfile.prod
           context: ./services/summaries
