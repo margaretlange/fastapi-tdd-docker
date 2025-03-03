@@ -4,7 +4,7 @@ import jwt
 
 from app.config import settings
 from app.custom_exceptions import BadCredentialsException, UnableCredentialsException
-
+import pdb
 
 @dataclass
 class JsonWebToken:

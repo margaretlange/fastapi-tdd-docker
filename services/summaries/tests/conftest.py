@@ -9,6 +9,18 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings, settings
 from app.main import create_application  # updated
+from auth0.authentication import GetToken
+# import pdb
+
+
+def get_set_token():
+    if not settings.jwt_test_token:
+        token = GetToken(settings.auth0_domain, settings.auth0_client_id, client_secret=settings.auth0_client_secret)
+        token = token.client_credentials(settings.auth0_audience)
+        token = token['access_token']
+        settings.jwt_test_token = token
+        return token
+    return settings.jwt_test_token
 
 
 def get_settings_override():
@@ -40,8 +52,9 @@ def test_app_with_db():
 
 @pytest.fixture(scope="module")
 def auth_header():
+    token = get_set_token()
     auth_header = {
-        "Authorization": f"Bearer {settings.jwt_test_token}",
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     }
     return auth_header

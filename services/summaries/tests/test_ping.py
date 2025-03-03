@@ -8,7 +8,7 @@ def test_ping(test_app):
     assert response.json() == {"environment": "dev", "ping": "pong", "testing": True}
 
 
-def test_pongprivate(test_app):
+def test_pongprivate(test_app, auth_header):
     auth_headers = {
         "Authorization": f"Bearer {settings.jwt_test_token}",
         "Content-Type": "application/json",

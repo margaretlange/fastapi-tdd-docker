@@ -57,3 +57,7 @@ config.py very similar
 small[utils.py] = large[custom_exceptions.py + json_web_token.py]
 
 https://www.reddit.com/r/webdev/comments/v8bkqe/what_would_be_the_best_way_to_collect_additional/
+
+how to generate token with sdk
+test_auth0_sdk
+

@@ -16,9 +16,10 @@ class Settings(BaseSettings):
 
     auth0_audience: str
     auth0_domain: str
-    # client_origin_url: str
+    auth0_client_id: str
+    auth0_client_secret: str
 
-    jwt_test_token: str
+    jwt_test_token: str | None = None
 
     @classmethod
     @validator("client_origin_url", "auth0_audience", "auth0_domain")
