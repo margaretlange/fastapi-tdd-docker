@@ -7,6 +7,7 @@ import json
 import pytest
 
 from app.api import crud, users
+
 # from app.api import users, crud
 from app.models.tortoise import SummarySchema
 
