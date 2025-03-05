@@ -14,6 +14,7 @@ from app.main import create_application  # updated
 # import pdb
 
 
+# still something weird here though
 def get_set_token():
     if not settings.jwt_test_token:
         token = GetToken(

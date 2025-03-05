@@ -61,3 +61,44 @@ https://www.reddit.com/r/webdev/comments/v8bkqe/what_would_be_the_best_way_to_co
 how to generate token with sdk
 test_auth0_sdk
 
+What accounts do I currently have on auth0?
+
+auth0 tenant (identified with autho domain)
+auth0 application (identified with a client_id and client_secret; specific to frontend, you would have a mobile app and web app application for same backend)
+
+applications come with login logout.  you have to set an audience api value to get tokens? 
+
+is the audience api your actual api URL on the web?
+
+so you get a test application api automatically when you create an api (at least through the dashboard)
+
+enable password grant for client?
+https://auth0.com/docs/get-started/applications/update-grant-types
+under "advanced settings" kill me now
+
+auth0.exceptions.Auth0Error: 400: Connection must be enabled for this client to perform single user creation and signup operations
+
+Dashboard → Authentication → Database → Username-Password- Authentication → Applications tab and selecting your M2M application from there. 
+
+wondering if i can use a security class
+https://fastapi.tiangolo.com/reference/security/
+
+not enough i don't think. see here:
+https://auth0.com/blog/build-and-secure-fastapi-server-with-auth0/
+wrap in security?
+
+https://fastapi.tiangolo.com/tutorial/dependencies/dependencies-in-path-operation-decorators/
+In some cases you don't really need the return value of a dependency inside your path operation function.
+
+Or the dependency doesn't return a value.
+
+But you still need it to be executed/solved.
+
+okay then I can put it in path operation function
+just do users for now, try to comment out everything else.
+
+going through this again https://auth0.com/blog/build-and-secure-fastapi-server-with-auth0/ with greater knowledge
+
+Declare a FastAPI Security dependency.
+
+The only difference with a regular dependency is that it can declare OAuth2 scopes that will be integrated with OpenAPI and the automatic UI docs (by default at /docs).
