@@ -102,3 +102,15 @@ going through this again https://auth0.com/blog/build-and-secure-fastapi-server-
 Declare a FastAPI Security dependency.
 
 The only difference with a regular dependency is that it can declare OAuth2 scopes that will be integrated with OpenAPI and the automatic UI docs (by default at /docs).
+
+https://developer.auth0.com/resources/code-samples/api/fastapi/basic-role-based-access-control
+
+API docs
+https://auth0.com/docs/api/authentication
+
+I was able to set this up through UI, I think I'd have to get the coveted administrative api token to do some of this programmatically
+idk if it would be worth trying to terraform this.
+
+login actually sends "access" and "Id" tokens -what are these?
+nevermind. once i added audience is just gives an access token.
+
