@@ -10,6 +10,11 @@ env:
 
 jobs:
   test:
+    name: Build API
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Admin Password
         run: |
