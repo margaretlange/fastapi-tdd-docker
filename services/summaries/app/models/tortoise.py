@@ -5,7 +5,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 class User(models.Model):
     username = fields.TextField()
-    auth_sub = fields.TextField(unique=True)
+    auth_sub = fields.CharField(unique=True, max_length=50)
     created_at = fields.DatetimeField(auto_now_add=True)
     text_summaries = fields.ReverseRelation["TextSummary"]
 

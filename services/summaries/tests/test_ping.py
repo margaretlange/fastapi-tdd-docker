@@ -1,5 +1,4 @@
 # project/tests/test_ping.py
-from app.config import settings
 
 
 def test_ping(test_app):
@@ -8,12 +7,8 @@ def test_ping(test_app):
     assert response.json() == {"environment": "dev", "ping": "pong", "testing": True}
 
 
-def test_pongprivate(test_app, auth_header):
-    auth_headers = {
-        "Authorization": f"Bearer {settings.jwt_test_token}",
-        "Content-Type": "application/json",
-    }
-    response = test_app.get("/ping/private", headers=auth_headers)
+def test_pongprivate(test_app, member_auth_header):
+    response = test_app.get("/ping/private", headers=member_auth_header)
     assert response.status_code == 200
     assert response.json() == {"ping": "This is a private endpoint"}
 

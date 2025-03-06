@@ -70,6 +70,8 @@ jobs:
             -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
             -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
             -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
+            -e TEST_ADMIN_PASSWORD=${{ secrets.TEST_ADMIN_PASSWORD }} \
+            -e TEST_MEMBER_PASSWORD=${{ secrets.TEST_MEMBER_PASSWORD }} \
             -p 5003:8765 \
             ${{ env.API_IMAGE }}:latest
       - name: Pytest

@@ -16,6 +16,7 @@ docker-compose exec web python -m pytest -k "summary and not test_read_summary"
 docker-compose exec web python -m pytest -x
 
 # enter PDB after first failure then end the test session
+# this will save a lot of time
 docker-compose exec web python -m pytest -x --pdb
 
 # stop the test run after two failures

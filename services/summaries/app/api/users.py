@@ -1,13 +1,15 @@
-project/app/api/s.py
-from typing import List, Annotated
+from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Security
+from fastapi import APIRouter, HTTPException, Path, Security
+
+from app.api import crud
+from app.dependencies import PermissionsValidator, validate_token
 
 # from fastapi import BackgroundTasks
 
-from app.api import crud
-from app.dependencies import validate_token
-from app.models.tortoise import SummarySchema
+
+# from app.models.tortoise import SummarySchema
+# import pdb
 
 # from app.summarizer import generate_summary
 
@@ -18,70 +20,103 @@ from app.models.tortoise import SummarySchema
 # )
 
 
-# import pdb
-
 from app.models.pydantic import (  # isort:skip
     UserResponseSchema,
     UserPayloadSchema,
+    UserWithoutSummariesSchema,
 )
 
 router = APIRouter()
 
+# member (current active user) routes
+
 
 @router.post(
-    "/profile/",
+    "/",
     response_model=UserResponseSchema,
     status_code=201,
 )
 async def create_user(
-    payload: UserPayloadSchema, token=Annotated[dict, Security(validate_token)]
+    payload: UserPayloadSchema, token: Annotated[dict, Security(validate_token)]
 ) -> UserResponseSchema:
-    user_id = await crud.post_user(payload, token['sub'])
+    user_id = await crud.post_user(payload, token["sub"])
     response_object = {"id": user_id, "username": payload.username}
     return response_object
 
 
-@router.get("/{id}/", response_model=UserResponseSchema)
-async def read_user(
-    id: int = Path(..., gt=0), token=Annotated[dict, Security(validate_token)]
-) -> UserResponseSchema:
-    user = await crud.get_user(id)
+@router.get("/profile/", response_model=UserWithoutSummariesSchema)
+async def read_current_active_user(
+    token: Annotated[dict, Security(validate_token)]
+) -> UserWithoutSummariesSchema:
+    user = await crud.get_current_active_user(token["sub"])
     if not user:
         raise HTTPException(status_code=404, detail="user not found")
-    response_object = {"id": user["id"], "username": user["username"]}
+    response_object = {
+        "id": user["id"],
+        "username": user["username"],
+        "auth_sub": user["auth_sub"],
+        "created_at": user["created_at"],
+    }
     return response_object
 
 
-@router.get("/", response_model=List[UserResponseSchema])
-async def read_all_users(
-    token=Annotated[dict, Security(validate_token)]
-) -> List[UserResponseSchema]:
-    users = await crud.get_all_users()
-    if len(users) == 0:
-        return users
-    users = [{"id": user["id"], "username": user["username"]} for user in users]
-    return users
-
-
-@router.delete(
-    "/profile/", response_model=UserResponseSchema]
-)
+@router.delete("/profile/", response_model=UserResponseSchema)
 async def delete_current_active_user(
-    token=Annotated[dict, Security(validate_token)]
+    token: Annotated[dict, Security(validate_token)]
 ) -> UserResponseSchema:
-    user = await crud.get_current_active_user(token['sub'])
+    user = await crud.get_current_active_user(token["sub"])
     if not user:
         raise HTTPException(status_code=404, detail="user not found")
 
-    await crud.delete_current_activte_user(token['sub'])
+    await crud.delete_current_active_user(token["sub"])
 
     return user
 
-@router.delete(
-    "/{id}/", response_model=UserResponseSchema]
-)
+
+# admin only routes
+# 'permissions': ['read:users-info']
+
+
+@router.get("/{id}/", response_model=UserWithoutSummariesSchema)
+async def read_user(
+    token: Annotated[dict, Security(PermissionsValidator(["read:users-info"]))],
+    id: int = Path(..., gt=0),
+) -> UserWithoutSummariesSchema:
+    user = await crud.get_user(id)
+    if not user:
+        raise HTTPException(status_code=404, detail="user not found")
+    response_object = {
+        "id": user["id"],
+        "username": user["username"],
+        "auth_sub": user["auth_sub"],
+        "created_at": user["created_at"],
+    }
+    return response_object
+
+
+@router.get("/", response_model=List[UserWithoutSummariesSchema])
+async def read_all_users(
+    token: Annotated[dict, Security(PermissionsValidator(["read:users-info"]))]
+) -> List[UserWithoutSummariesSchema]:
+    users = await crud.get_all_users()
+    if len(users) == 0:
+        return users
+    users = [
+        {
+            "id": user["id"],
+            "username": user["username"],
+            "auth_sub": user["auth_sub"],
+            "created_at": user["created_at"],
+        }
+        for user in users
+    ]
+    return users
+
+
+@router.delete("/{id}/", response_model=UserResponseSchema)
 async def delete_user(
-    id: int = Path(..., gt=0), token=Annotated[dict, Security(validate_token)]
+    token: Annotated[dict, Security(PermissionsValidator(["read:users-info"]))],
+    id: int = Path(..., gt=0),
 ) -> UserResponseSchema:
     user = await crud.get_user(id)
     if not user:
@@ -92,6 +127,7 @@ async def delete_user(
     return user
 
 
+# admin 'permissions': ['read:summaries-info',
 # @router.post(
 #     "/{user_id}/summaries/",
 #     response_model=SummaryResponseSchema,

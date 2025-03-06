@@ -9,6 +9,8 @@ from app.custom_exceptions import (  # isort: skip
     UnableCredentialsException,
 )
 
+# import pdb
+
 
 @dataclass
 class JsonWebToken:

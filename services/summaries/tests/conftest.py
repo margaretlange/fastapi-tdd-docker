@@ -14,18 +14,44 @@ from app.main import create_application  # updated
 # import pdb
 
 
-def get_set_token():
-    if not settings.jwt_test_token:
+def get_set_token_admin():
+    admin_info = {
+        "username": "adminlady@domain.com",
+        "password": settings.test_admin_password,
+        "realm": "Username-Password-Authentication",
+        "audience": settings.auth0_audience,
+    }
+    if not settings.jwt_test_token_admin:
         token = GetToken(
             settings.auth0_domain,
             settings.auth0_client_id,
             client_secret=settings.auth0_client_secret,
         )
-        token = token.client_credentials(settings.auth0_audience)
+        token = token.login(**admin_info)
         token = token["access_token"]
-        settings.jwt_test_token = token
+        settings.jwt_test_token_admin = token
         return token
-    return settings.jwt_test_token
+    return settings.jwt_test_token_admin
+
+
+def get_set_token_member():
+    member_info = {
+        "username": "testtwo@domain.com",
+        "password": settings.test_member_password,
+        "realm": "Username-Password-Authentication",
+        "audience": settings.auth0_audience,
+    }
+    if not settings.jwt_test_token_member:
+        token = GetToken(
+            settings.auth0_domain,
+            settings.auth0_client_id,
+            client_secret=settings.auth0_client_secret,
+        )
+        token = token.login(**member_info)
+        token = token["access_token"]
+        settings.jwt_test_token_member = token
+        return token
+    return settings.jwt_test_token_member
 
 
 def get_settings_override():
@@ -55,9 +81,19 @@ def test_app_with_db():
         yield test_client
 
 
-@pytest.fixture(scope="module")
-def auth_header():
-    token = get_set_token()
+@pytest.fixture(scope="session")
+def member_auth_header():
+    token = get_set_token_member()
+    auth_header = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+    return auth_header
+
+
+@pytest.fixture(scope="session")
+def admin_auth_header():
+    token = get_set_token_admin()
     auth_header = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",

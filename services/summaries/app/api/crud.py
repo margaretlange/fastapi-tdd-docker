@@ -1,9 +1,12 @@
 # project/app/api/crud.py
 
-from typing import List, Tuple, Union
+from typing import List, Union
 
-from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
-from app.models.tortoise import SummarySchema, TextSummary, User
+from app.models.pydantic import UserPayloadSchema
+from app.models.tortoise import User
+
+# from typing import Tuple
+
 
 # import pdb
 
@@ -42,8 +45,8 @@ async def delete_current_active_user(auth_sub: str) -> int:
     return user
 
 
-async def delete_user(int: id) -> int:
-    user = await User.filter(auth_sub=auth_sub).first().delete()
+async def delete_user(id: int) -> int:
+    user = await User.filter(id=id).first().delete()
     return user
 
 
