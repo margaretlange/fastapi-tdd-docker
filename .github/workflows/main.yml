@@ -1,6 +1,9 @@
 name: Continuous Integration and Delivery
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 env:
   API_IMAGE: ghcr.io/margaretlange/fastapi-tdd-docker/summarizer
