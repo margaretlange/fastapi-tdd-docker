@@ -1,0 +1,86 @@
+name: Continuous Integration and Delivery
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  API_IMAGE: ghcr.io/margaretlange/fastapi-tdd-docker/summarizer
+
+jobs:
+  build:
+    name: Build API
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up ssh agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.TESTING_API_SSH_PRIVATE }}
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull image
+        run: docker pull ${{ env.API_IMAGE }}:latest || true
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          ssh: |
+            default=${{ env.SSH_AUTH_SOCK }}
+          tags: ${{ env.API_IMAGE }}:latest
+          push: true
+          cache-from: ${{ env.API_IMAGE }}:latest
+          file: ./services/summaries/Dockerfile.prod
+          context: ./services/summaries
+  test:
+    name: Test Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_MEMBER_PASSWORD: ${{ secrets.TEST_MEMBER_PASSWORD }}
+      - name: Pull image
+        run: docker pull ${{ env.API_IMAGE }}:latest || true
+      - name: Run container
+        run: |
+          docker run \
+            -d \
+            --name test-api \
+            -e PORT=8765 \
+            -e ENVIRONMENT=dev \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
+            -e TAVILY_API_URL=${{ secrets.TAVILY_API_KEY }} \
+            -e DATABASE_URL=sqlite://sqlite.db \
+            -e DATABASE_TEST_URL=sqlite://sqlite.db \
+            -e AUTH0_AUDIENCE=${{ secrets.AUTH0_AUDIENCE }} \
+            -e AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }} \
+            -e AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }} \
+            -e AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
+            -e TEST_ADMIN_PASSWORD="$TEST_ADMIN_PASSWORD" \
+            -e TEST_MEMBER_PASSWORD="$TEST_MEMBER_PASSWORD" \
+            -p 5003:8765 \
+            ${{ env.API_IMAGE }}:latest
+      - name: Pytest
+        run: docker exec test-api python -m pytest .
+      - name: Flake8
+        run: docker exec test-api python -m flake8 .
+      - name: Black
+        run: docker exec test-api python -m black --check .
+      - name: isort
+        run: docker exec test-api python -m isort --check .
