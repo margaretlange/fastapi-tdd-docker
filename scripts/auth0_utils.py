@@ -93,7 +93,7 @@ if __name__ == "__main__":
     }
 
     access_token = get_test_token_user(args, admin_info_token)
-    # print(access_token)
+    print(access_token)
     validate_token(args, access_token)
     # Example usage
     # create_test_user(args, admin_info, admin=True)

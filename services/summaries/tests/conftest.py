@@ -11,7 +11,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from app.config import Settings, get_settings, settings
 from app.main import create_application  # updated
 
-# import pdb
+import pdb
 
 
 def get_set_token_admin():

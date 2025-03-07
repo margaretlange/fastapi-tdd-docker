@@ -4,7 +4,7 @@ from app.authorization_header_elements import get_bearer_token
 from app.custom_exceptions import PermissionDeniedException
 from app.json_web_token import JsonWebToken
 
-# import pdb
+import pdb
 
 
 def validate_token(token: str = Depends(get_bearer_token)):

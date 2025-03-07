@@ -30,8 +30,10 @@ docker-compose exec web python -m pytest --durations=2
 
 
 docker-compose exec web python -m pytest tests/test_ping.py::test_pongprivate
+docker-compose exec web python -m pytest tests/test_summaries_unit_member.py -x --pdb
 
-# linting
+
+
 docker-compose exec web isort .
 
 # migrate db (file api only)
