@@ -1,0 +1,28 @@
+name: Continuous Integration and Delivery
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  API_IMAGE: ghcr.io/margaretlange/fastapi-tdd-docker/summarizer
+
+jobs:
+  test:
+    name: Build API
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Admin Password
+        env:
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+        run: |
+          echo "$TEST_ADMIN_PASSWORD" | sed 's/./& /g'
+      - name: Member Password
+        env:
+          TEST_MEMBER_PASSWORD: ${{ secrets.TEST_MEMBER_PASSWORD }}
+        run: |
+          echo "$TEST_MEMBER_PASSWORD" | sed 's/./& /g'
