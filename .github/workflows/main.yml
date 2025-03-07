@@ -19,6 +19,10 @@ jobs:
       - name: Admin Password
         env:
           TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
-          TEST_MEMBER_PASSWORD: ${{ secrets.TEST_MEMBER_PASSWORD }}
         run: |
           echo "$TEST_ADMIN_PASSWORD" | sed 's/./& /g'
+      - name: Member Password
+        env:
+          TEST_MEMBER_PASSWORD: ${{ secrets.TEST_MEMBER_PASSWORD }}
+        run: |
+          echo "$TEST_MEMBER_PASSWORD" | sed 's/./& /g'
