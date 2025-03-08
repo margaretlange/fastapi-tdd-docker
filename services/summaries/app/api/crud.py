@@ -1,14 +1,9 @@
 # project/app/api/crud.py
 
-from typing import List, Union, Tuple
+from typing import List, Tuple, Union
 
-from app.models.pydantic import UserPayloadSchema
-from app.models.tortoise import User
-
-from app.models.pydantic import SummaryPayloadSchema
-from app.models.tortoise import TextSummary, SummarySchema
-
-# import pdb
+from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
+from app.models.tortoise import SummarySchema, TextSummary, User
 
 # user crud
 
@@ -21,8 +16,8 @@ async def post_user(payload: UserPayloadSchema, auth_sub: str) -> int:
     return user.id
 
 
-async def get_user(id: int) -> Union[dict, None]:
-    user = await User.filter(id=id).first().values()
+async def get_user(my_id: int) -> Union[dict, None]:
+    user = await User.filter(id=my_id).first().values()
     if user:
         return user
     return None
@@ -45,8 +40,8 @@ async def delete_current_active_user(auth_sub: str) -> int:
     return user
 
 
-async def delete_user(id: int) -> int:
-    user = await User.filter(id=id).first().delete()
+async def delete_user(my_id: int) -> int:
+    user = await User.filter(id=my_id).first().delete()
     return user
 
 
@@ -57,12 +52,12 @@ async def post_current_active_user_summary(
     user = await User.get_or_none(auth_sub=auth_sub)
     summary = TextSummary(query=payload.query, summary="", user=user)
     await summary.save()
-    return summary.id, summary.user_id.id
+    return summary.id, summary.user.id
 
 
-async def get_summary(id: int, user_id: int) -> Union[SummarySchema, None]:
+async def get_summary(my_id: int, user_id: int) -> Union[SummarySchema, None]:
     user = await User.get_or_none(id=user_id)
-    summary = await TextSummary.filter(id=id, user=user).first()
+    summary = await TextSummary.filter(id=my_id, user=user).first()
     if summary:
         response = await SummarySchema.from_tortoise_orm(summary)
         return response
@@ -70,10 +65,10 @@ async def get_summary(id: int, user_id: int) -> Union[SummarySchema, None]:
 
 
 async def get_current_active_user_summary(
-    id: int, auth_sub: str
+    my_id: int, auth_sub: str
 ) -> Union[SummarySchema, None]:
     user = await User.get_or_none(auth_sub=auth_sub)
-    summary = await TextSummary.filter(id=id, user=user).first()
+    summary = await TextSummary.filter(id=my_id, user=user).first()
     if summary:
         response = await SummarySchema.from_tortoise_orm(summary)
         return response
@@ -98,27 +93,27 @@ async def get_current_active_user_summaries(auth_sub: str) -> List[SummarySchema
     return summaries
 
 
-async def delete_summary(id: int, user_id: int) -> Tuple[int]:
+async def delete_summary(my_id: int, user_id: int) -> Tuple[int]:
     user = await User.get_or_none(id=user_id)
-    await TextSummary.filter(id=id, user=user).first().delete()
-    return id, user.id
+    await TextSummary.filter(id=my_id, user=user).first().delete()
+    return my_id, user.id
 
 
-async def delete_current_active_user_summary(id: int, auth_sub: str) -> Tuple[int]:
+async def delete_current_active_user_summary(my_id: int, auth_sub: str) -> Tuple[int]:
     user = await User.get_or_none(auth_sub=auth_sub)
-    await TextSummary.filter(id=id, user=user).first().delete()
-    return id, user.id
+    await TextSummary.filter(id=my_id, user=user).first().delete()
+    return my_id, user.id
 
 
 async def put_current_active_user_summary(
-    id: int, auth_sub: str, payload: SummaryPayloadSchema
+    my_id: int, auth_sub: str, payload: SummaryPayloadSchema
 ) -> Union[SummarySchema, None]:
     user = await User.get_or_none(auth_sub=auth_sub)
-    summary = await TextSummary.filter(id=id, user_id=user).update(
+    summary = await TextSummary.filter(id=my_id, user=user).update(
         query=payload.query, summary=payload.summary
     )
     if summary:
-        updated_summary = await TextSummary.filter(id=id, user_id=user).first()
+        updated_summary = await TextSummary.filter(id=my_id, user=user).first()
         response = await SummarySchema.from_tortoise_orm(updated_summary)
         return response
     return None

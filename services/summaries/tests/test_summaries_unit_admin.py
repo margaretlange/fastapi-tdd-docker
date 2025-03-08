@@ -3,14 +3,17 @@
 
 import datetime
 
-
 from app.api import crud
 from app.models.tortoise import SummarySchema
-import pdb
 
 
 def test_read_summary(test_app, monkeypatch, admin_auth_header):
-    user_info = {"username": "Jane Doe", "id": 1, "created_at": "2024-12-31T23:59:59Z", "auth_sub": "usersub"}
+    user_info = {
+        "username": "Jane Doe",
+        "id": 1,
+        "created_at": "2024-12-31T23:59:59Z",
+        "auth_sub": "usersub",
+    }
 
     test_data = {
         "id": 1,
@@ -43,7 +46,12 @@ def test_read_summary_incorrect_id(test_app, monkeypatch, admin_auth_header):
 
 
 def test_read_all_summaries(test_app, monkeypatch, admin_auth_header):
-    user_info = {"username": "Jane Doe", "id": 1, "created_at": "2024-12-31T23:59:59Z", "auth_sub": "usersub"}
+    user_info = {
+        "username": "Jane Doe",
+        "id": 1,
+        "created_at": "2024-12-31T23:59:59Z",
+        "auth_sub": "usersub",
+    }
     test_data = [
         {
             "user": user_info,
@@ -76,7 +84,12 @@ def test_read_all_summaries(test_app, monkeypatch, admin_auth_header):
 
 
 def test_remove_summary(test_app, monkeypatch, admin_auth_header):
-    user_info = {"username": "Jane Doe", "id": 1, "created_at": "2024-12-31T23:59:59Z", "auth_sub": "usersub"}
+    user_info = {
+        "username": "Jane Doe",
+        "id": 1,
+        "created_at": "2024-12-31T23:59:59Z",
+        "auth_sub": "usersub",
+    }
     test_data = {
         "id": 1,
         "user": user_info,

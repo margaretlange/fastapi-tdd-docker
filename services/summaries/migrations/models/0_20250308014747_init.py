@@ -6,6 +6,7 @@ async def upgrade(db: BaseDBAsyncClient) -> str:
         CREATE TABLE IF NOT EXISTS "user" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "username" TEXT NOT NULL,
+    "auth_sub" VARCHAR(50) NOT NULL UNIQUE,
     "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS "textsummary" (
@@ -13,7 +14,7 @@ CREATE TABLE IF NOT EXISTS "textsummary" (
     "query" TEXT NOT NULL,
     "summary" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-    "user_id_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE
+    "user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "aerich" (
     "id" SERIAL NOT NULL PRIMARY KEY,
