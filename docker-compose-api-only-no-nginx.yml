@@ -5,11 +5,18 @@ services:
       dockerfile: Dockerfile.prod
       ssh:
         - default
-    environment:
-      - ENVIRONMENT=prod
-      - TESTING=0
-      - DATABASE_URL=${DATABASE_URL}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - TAVILY_API_KEY=${TAVILY_API_KEY}
+    env_file:
+      - .envdev
+    depends_on:
+      - web-db
     ports:
       - 8000:8000
+  web-db:
+    build:
+      context: ./services/summaries/db
+      dockerfile: Dockerfile
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

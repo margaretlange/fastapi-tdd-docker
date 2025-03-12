@@ -26,6 +26,7 @@ docker-compose exec web python -m pytest --maxfail=2
 docker-compose exec web python -m pytest -l
 
 # list the 2 slowest tests
+
 docker-compose exec web python -m pytest --durations=2
 
 
@@ -40,3 +41,10 @@ docker-compose exec web isort .
 docker-compose -f docker-compose-api-only.yml exec web aerich init -t app.db.TORTOISE_ORM
 docker-compose -f docker-compose-api-only.yml exec web aerich init-db 
 docker-compose -f docker-compose-api-only-no-nginx.yml exec web aerich upgrade 
+docker-compose exec web-db psql -U postgres
+
+# server specific
+# original docker compose
+command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+new command
+gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120

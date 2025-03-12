@@ -6,6 +6,7 @@ from app.api import crud
 from app.dependencies import PermissionsValidator, validate_token
 from app.models.tortoise import SummarySchema
 from app.summarizer import generate_summary
+import logging
 
 # import pdb
 
@@ -135,10 +136,12 @@ async def create_current_active_user_summary(
     background_tasks: BackgroundTasks,
     token: Annotated[dict, Security(validate_token)],
 ) -> SummaryResponseSchema:
+    logging.warning("Before background tasks in post_summary")
     summary_id, user_id = await crud.post_current_active_user_summary(
         token["sub"], payload
     )
     background_tasks.add_task(generate_summary, summary_id, user_id, str(payload.query))
+    logging.warning("After background tasks in post_summary")
     response_object = {"id": summary_id, "query": payload.query, "user_id": user_id}
     return response_object
 
