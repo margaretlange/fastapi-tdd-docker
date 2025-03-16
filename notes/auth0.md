@@ -114,3 +114,21 @@ idk if it would be worth trying to terraform this.
 login actually sends "access" and "Id" tokens -what are these?
 nevermind. once i added audience is just gives an access token.
 
+I generated the terraform definitions using the auth0 cli. They are currently in auth0-terraform.  I'm going to look at the management api explorer is I can.
+
+helpful auth0 client commands
+./auth0 tenants list
+./auth0 roles list
+./auth0 roles permissions list
+./auth0 users search
+[requires a query]
+/auth0 apps list
+./auth0 apps show [id]
+./auth0 apis list
+
+followed the exact instructions on the client finally to get it working
+https://registry.terraform.io/providers/auth0/auth0/latest/docs/guides/generate_terraform_config
+how am I going to save the state now?
+
+https://dev.to/sre_panchanan/introduction-to-aws-s3-remote-backend-with-terraform-28i7
+https://stackoverflow.com/questions/69419470/auth0-error-authorization-server-not-configured-with-default-connection#:~:text=Go%20to%20Auth0%20Dashboard%20%3E%20Tenant,users%20by%20username%20and%20password.

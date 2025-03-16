@@ -1,0 +1,17 @@
+Postman notes
+trying to find curl for getting token to test
+https://auth0.com/docs/get-started/authentication-and-authorization-flow/resource-owner-password-flow/call-your-api-using-resource-owner-password-flow
+
+curl --request POST \
+  --url 'https://dev-lhn1ufqgkgz8lk5w.us.auth0.com/oauth/token' \
+  --header 'content-type: application/x-www-form-urlencoded' \
+  --data grant_type=http://auth0.com/oauth/grant-type/password-realm \
+  --data 'username={username}' \
+  --data 'password={password}' \
+  --data 'audience={yourApiIdentifier}' \
+  --data scope=read:sample \
+  --data 'client_id=jxxjVmPI6dHQf0JJanyJS0CcFb8udXip' \
+  --data 'client_secret={yourClientSecret}'
+
+https://medium.com/developer-rants/authenticating-postman-requests-with-auth0-103a4b6f5a7c
+https://learning.postman.com/docs/sending-requests/authorization/oauth-20/

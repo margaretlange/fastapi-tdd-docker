@@ -92,7 +92,7 @@ if __name__ == "__main__":
         "audience": args.AUTH0_AUDIENCE,
     }
 
-    access_token = get_test_token_user(args, member_info_token)
+    access_token = get_test_token_user(args, admin_info_token)
     print(access_token)
     # validate_token(args, access_token)
     # Example usage
