@@ -6,11 +6,11 @@ from app.dependencies import validate_token
 router = APIRouter()
 
 
-@router.get("/status")
+@router.get("/status/")
 async def status(settings: Settings = Depends(get_settings)):
     return {"status": "ok"}
 
 
-@router.get("/status/private", dependencies=[Depends(validate_token)])
+@router.get("/status/private/", dependencies=[Depends(validate_token)])
 async def status_private():
     return {"status": "This is a private endpoint."}

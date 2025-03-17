@@ -19,6 +19,7 @@ def create_test_user(args, user_info, admin=False):
 
 # removing errors since my goal is just inspection
 def validate_token(args, jwt_access_token):
+    # pdb.set_trace()
     auth0_issuer_url = f"https://{args.AUTH0_DOMAIN}/"
     # make sure to install cryptography library
     algorithm = "RS256"
@@ -32,7 +33,7 @@ def validate_token(args, jwt_access_token):
         audience=args.AUTH0_AUDIENCE,
         issuer=auth0_issuer_url,
     )
-    pdb.set_trace()
+    print(payload)
     return payload
 
 
@@ -92,9 +93,21 @@ if __name__ == "__main__":
         "audience": args.AUTH0_AUDIENCE,
     }
 
-    access_token = get_test_token_user(args, member_info_token)
-    print(access_token)
-    # validate_token(args, access_token)
+    admin_access_token = get_test_token_user(args, admin_info_token)
+    # print(access_token)
+    print(admin_access_token)
+    validate_token(args, admin_access_token)
+    with open('admin_access_jwk.txt', 'w') as fh:
+        fh.write(admin_access_token)
+    
+    member_access_token = get_test_token_user(args, member_info_token)
+    # print(access_token)
+    print(member_access_token)
+    validate_token(args, member_access_token)
+    with open('member_access_jwk.txt', 'w') as fh:
+        fh.write(admin_access_token)
+    
+
     # Example usage
     # create_test_user(args, admin_info, admin=True)
     #     # token = get_test_token(args)
