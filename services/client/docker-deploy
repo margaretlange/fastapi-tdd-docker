@@ -1,3 +1,0 @@
-docker build -t react-nginx .
-docker run --name react-nginx-container -p 80:80 react-nginx
-docker start react-nginx-container

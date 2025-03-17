@@ -105,7 +105,7 @@ if __name__ == "__main__":
     print(member_access_token)
     validate_token(args, member_access_token)
     with open('member_access_jwk.txt', 'w') as fh:
-        fh.write(admin_access_token)
+        fh.write(member_access_token)
     
 
     # Example usage

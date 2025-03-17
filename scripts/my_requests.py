@@ -19,8 +19,6 @@ def setup_test_user(member_auth_header):
 
 
 def simple_test():
-    # response = requests.get("http://localhost:8000/ping/private", headers=my_header)
-    # print(response.json())
     response = requests.get(f"{url}/status/private", headers=my_header)
     return response.json()
 
@@ -43,4 +41,4 @@ if __name__ == "__main__":
         "Content-Type": "application/json",
     }
     with setup_test_user(my_header):
-        print(simple_test())
+        print(summary_test())

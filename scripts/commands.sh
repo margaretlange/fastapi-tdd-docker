@@ -20,6 +20,7 @@ docker-compose exec web python -m pytest -x
 docker-compose exec web python -m pytest -x --pdb
 
 # stop the test run after two failures
+
 docker-compose exec web python -m pytest --maxfail=2
 
 # show local variables in tracebacks
