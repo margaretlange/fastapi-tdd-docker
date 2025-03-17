@@ -4,6 +4,7 @@ import json
 
 # import pdb
 # right now set up and clean up are in the tests so they have to run in order
+# this is bad practice according to wikipedia
 
 
 def test_create_users_invalid_json(test_app, member_auth_header):
