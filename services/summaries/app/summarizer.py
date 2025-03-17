@@ -1,10 +1,12 @@
 # project/app/summarizer.py
 
+import logging
+
 from assistant.graph import graph
 from assistant.state import SummaryStateInput
 
 from app.models.tortoise import TextSummary
-import logging
+
 # import asyncio
 
 

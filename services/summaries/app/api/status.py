@@ -8,9 +8,7 @@ router = APIRouter()
 
 @router.get("/status")
 async def status(settings: Settings = Depends(get_settings)):
-    return {
-        "status": "ok"
-    }
+    return {"status": "ok"}
 
 
 @router.get("/status/private", dependencies=[Depends(validate_token)])
