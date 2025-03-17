@@ -5,7 +5,7 @@ import logging
 
 from fastapi import FastAPI
 
-from app.api import ping, users
+from app.api import status, users
 from app.db import init_db
 
 # from app.config import get_settings
@@ -26,7 +26,7 @@ def create_application() -> FastAPI:
     #    max_age=86400,
     # )
 
-    application.include_router(ping.router)
+    application.include_router(status.router)
     application.include_router(users.router, prefix="/users", tags=["users"])
     return application
 
