@@ -39,6 +39,7 @@ LOCAL POSTGRES
 psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
 
 sudo -u postgres psql
+DROP Database web_dev;
 CREATE DATABASE web_dev;
 GRANT ALL PRIVILEGES ON DATABASE web_dev TO maggie;
 psql -h localhost -U maggie -d web_dev

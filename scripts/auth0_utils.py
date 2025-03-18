@@ -45,6 +45,14 @@ def get_test_token_user(args, user_info):
     return token["access_token"]
 
 
+def get_spa_token_user(args, user_info):
+    token = GetToken(
+        args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID, client_secret=args.AUTH0_CLIENT_SECRET
+    )
+    token = token.login(**user_info)
+    return token["access_token"]
+
+
 def get_test_token(args):
     token = GetToken(
         args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID, client_secret=args.AUTH0_CLIENT_SECRET
@@ -92,7 +100,9 @@ if __name__ == "__main__":
         "realm": "Username-Password-Authentication",
         "audience": args.AUTH0_AUDIENCE,
     }
+    # I also have admin privileges
 
+   
     admin_access_token = get_test_token_user(args, admin_info_token)
     # print(access_token)
     print(admin_access_token)

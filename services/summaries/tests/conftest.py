@@ -12,44 +12,18 @@ from app.config import Settings, get_settings, settings
 from app.main import create_application  # updated
 
 
-def get_set_token_admin():
-    admin_info = {
-        "username": "adminlady@domain.com",
-        "password": settings.test_admin_password,
-        "realm": "Username-Password-Authentication",
-        "audience": settings.auth0_audience,
-    }
-    if not settings.jwt_test_token_admin:
+def get_set_token(info_dict, token_name):
+    if not getattr(settings, token_name):
         token = GetToken(
             settings.auth0_domain,
             settings.auth0_client_id,
             client_secret=settings.auth0_client_secret,
         )
-        token = token.login(**admin_info)
+        token = token.login(**info_dict)
         token = token["access_token"]
-        settings.jwt_test_token_admin = token
+        setattr(settings, token_name, token)
         return token
-    return settings.jwt_test_token_admin
-
-
-def get_set_token_member():
-    member_info = {
-        "username": "testtwo@domain.com",
-        "password": settings.test_member_password,
-        "realm": "Username-Password-Authentication",
-        "audience": settings.auth0_audience,
-    }
-    if not settings.jwt_test_token_member:
-        token = GetToken(
-            settings.auth0_domain,
-            settings.auth0_client_id,
-            client_secret=settings.auth0_client_secret,
-        )
-        token = token.login(**member_info)
-        token = token["access_token"]
-        settings.jwt_test_token_member = token
-        return token
-    return settings.jwt_test_token_member
+    return getattr(settings, token_name)
 
 
 def get_settings_override():
@@ -81,7 +55,13 @@ def test_app_with_db():
 
 @pytest.fixture(scope="session")
 def member_auth_header():
-    token = get_set_token_member()
+    member_info = {
+        "username": "testtwo@domain.com",
+        "password": settings.test_member_password,
+        "realm": "Username-Password-Authentication",
+        "audience": settings.auth0_audience,
+    }
+    token = get_set_token(member_info, 'jwt_test_token_member')
     auth_header = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
@@ -91,16 +71,15 @@ def member_auth_header():
 
 @pytest.fixture(scope="session")
 def admin_auth_header():
-    token = get_set_token_admin()
+    admin_info = {
+        "username": "adminlady@domain.com",
+        "password": settings.test_admin_password,
+        "realm": "Username-Password-Authentication",
+        "audience": settings.auth0_audience,
+    }
+    token = get_set_token(admin_info, 'jwt_test_token_admin')
     auth_header = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     }
     return auth_header
-
-
-# @pytest.fixture
-# def mock_validate_token(monkeypatch):
-#    def mock_inner(*args, **kwargs):
-#        return True
-#    monkeypatch.setattr(dependencies, "validate_token", mock_inner)
