@@ -4,26 +4,12 @@
 import os
 
 import pytest
-from auth0.authentication import GetToken
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
-from app.config import Settings, get_settings, settings
+from app.config import Settings, get_settings
 from app.main import create_application  # updated
-
-
-def get_set_token(info_dict, token_name):
-    if not getattr(settings, token_name):
-        token = GetToken(
-            settings.auth0_domain,
-            settings.auth0_client_id,
-            client_secret=settings.auth0_client_secret,
-        )
-        token = token.login(**info_dict)
-        token = token["access_token"]
-        setattr(settings, token_name, token)
-        return token
-    return getattr(settings, token_name)
+from app.test.auth_utils import get_test_token
 
 
 def get_settings_override():
@@ -55,13 +41,7 @@ def test_app_with_db():
 
 @pytest.fixture(scope="session")
 def member_auth_header():
-    member_info = {
-        "username": "testtwo@domain.com",
-        "password": settings.test_member_password,
-        "realm": "Username-Password-Authentication",
-        "audience": settings.auth0_audience,
-    }
-    token = get_set_token(member_info, 'jwt_test_token_member')
+    token = get_test_token('jwt_test_token_member')
     auth_header = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
@@ -71,13 +51,7 @@ def member_auth_header():
 
 @pytest.fixture(scope="session")
 def admin_auth_header():
-    admin_info = {
-        "username": "adminlady@domain.com",
-        "password": settings.test_admin_password,
-        "realm": "Username-Password-Authentication",
-        "audience": settings.auth0_audience,
-    }
-    token = get_set_token(admin_info, 'jwt_test_token_admin')
+    token = get_test_token('jwt_test_token_admin')
     auth_header = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
