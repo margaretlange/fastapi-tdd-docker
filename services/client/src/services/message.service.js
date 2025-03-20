@@ -37,6 +37,24 @@ export const getProtectedResource = async (accessToken) => {
   };
 };
 
+export const getSummaryResource = async (accessToken) => {
+  const config = {
+    url: `${apiServerUrl}/users/profile/summaries/1/`,
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+
+  const { data, error } = await callExternalApi({ config });
+
+  return {
+    data: data || null,
+    error,
+  };
+};
+
 export const getAdminResource = async (accessToken) => {
   const config = {
     url: `${apiServerUrl}/status/admin/`,

@@ -35,3 +35,6 @@ https://stackoverflow.com/questions/77060233/unknown-host-error-calling-containe
 CLIENT_ORIGIN_URL=http://localhost:4040
 REACT_APP_API_SERVER_URL=http://localhost:8000
 
+for hot reloading
+WATCHPACK_POLLING=true
+in .env file

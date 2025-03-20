@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import React, { useEffect, useState } from "react";
 import { CodeSnippet } from "../components/code-snippet";
 import { PageLayout } from "../components/page-layout";
-import { getProtectedResource } from "../services/message.service";
+import { getSummaryResource } from "../services/message.service";
 
 export const ProtectedPage = () => {
   const [message, setMessage] = useState("");
@@ -14,7 +14,7 @@ export const ProtectedPage = () => {
 
     const getMessage = async () => {
       const accessToken = await getAccessTokenSilently();
-      const { data, error } = await getProtectedResource(accessToken);
+      const { data, error } = await getSummaryResource(accessToken);
 
       if (!isMounted) {
         return;
@@ -52,7 +52,7 @@ export const ProtectedPage = () => {
               <strong>Only authenticated users can access this page.</strong>
             </span>
           </p>
-          <CodeSnippet title="Protected Message" code={message} />
+          <CodeSnippet title="Sample Response" code={message} />
         </div>
       </div>
     </PageLayout>
