@@ -139,3 +139,5 @@ for creating mock test tokens:
 https://testdriven.io/courses/auth-flask-react/jwt-setup/
 
 for decoding mock test tokens:
+
+see testing readme for the two options

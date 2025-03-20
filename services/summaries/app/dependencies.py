@@ -1,12 +1,11 @@
+# import pdb
+import jwt
 from fastapi import Depends
 
 from app.authorization_header_elements import get_bearer_token
+from app.config import settings
 from app.custom_exceptions import PermissionDeniedException
 from app.json_web_token import JsonWebToken
-
-# import pdb
-import jwt
-from app.config import settings
 
 
 def validate_token(token: str = Depends(get_bearer_token)):
@@ -16,6 +15,7 @@ def validate_token(token: str = Depends(get_bearer_token)):
 def mock_validate_token(token: str = Depends(get_bearer_token)):
     payload = jwt.decode(token, settings.jwt_test_encode_key, algorithms="HS256")
     return payload
+
 
 # this worked
 # def validate_token():

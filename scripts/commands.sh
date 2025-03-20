@@ -37,7 +37,7 @@ docker-compose exec web python -m pytest tests/test_summaries_admin.py -x --pdb
 
 
 
-docker-compose exec web isort .
+docker-compose exec web isort --profile black .
 
 # migrate db (file api only)
 docker-compose -f docker-compose-api-only.yml exec web aerich init -t app.db.TORTOISE_ORM

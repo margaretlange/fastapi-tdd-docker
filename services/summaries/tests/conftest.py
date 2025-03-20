@@ -2,15 +2,22 @@
 
 
 import os
-import pdb
+
+# import pdb
 import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings
+from app.dependencies import mock_validate_token, validate_token
 from app.main import create_application  # updated
-from tests.auth_utils import get_test_token_admin, get_test_token_member, mock_get_test_token_admin, mock_get_test_token_member
-from app.dependencies import validate_token, mock_validate_token
+from tests.auth_utils import (
+    get_test_token_member,
+    mock_get_test_token_admin,
+    mock_get_test_token_member,
+)
+
+from tests.auth_utils import get_test_token_admin  # isort:skip
 
 
 def get_settings_override():
@@ -18,7 +25,11 @@ def get_settings_override():
 
 
 def pytest_addoption(parser):
-    parser.addoption("--integration", action="store_true", help="run tests against auth0 authentication")
+    parser.addoption(
+        "--integration",
+        action="store_true",
+        help="run tests against auth0 authentication",
+    )
 
 
 @pytest.fixture(scope="session")
@@ -77,6 +88,3 @@ def test_app_with_db(integration):
     )
     with TestClient(app) as test_client:
         yield test_client
-
-
-
