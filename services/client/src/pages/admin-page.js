@@ -51,7 +51,7 @@ export const AdminPage = () => {
             <span>
               <strong>
                 Only authenticated users with the{" "}
-                <code>read:admin-messages</code> permission should access this
+                <code>read:summaries-info</code> permission should access this
                 page.
               </strong>
             </span>

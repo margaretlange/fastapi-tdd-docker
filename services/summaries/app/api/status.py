@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Security
 
 from app.config import Settings, get_settings
-from app.dependencies import validate_token
+from app.dependencies import validate_token, PermissionsValidator
 
 router = APIRouter()
 
@@ -16,6 +16,6 @@ async def status_private():
     return {"status": "This is a private endpoint."}
 
 
-@router.get("/status/admin/", dependencies=[Depends(validate_token)])
+@router.get("/status/admin/", dependencies=[Security(PermissionsValidator(["read:summaries-info"]))])
 async def status_admin():
     return {"status": "This is an admin endpoint."}
