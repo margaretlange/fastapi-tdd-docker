@@ -10,7 +10,7 @@ from app.api import users
 # import pdb
 
 
-# make sure a member is in the database
+# make sure a member ("John Smith") is in the database
 # this should be module level but monkeypatch is function level so working on it
 @pytest.fixture(scope="function")
 def setup_user_info(test_app_with_db, monkeypatch, member_auth_header):
@@ -21,7 +21,7 @@ def setup_user_info(test_app_with_db, monkeypatch, member_auth_header):
 
     print("Adding current active user and summary to database")
     response_one = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=member_auth_header
+        "/users/", data=json.dumps({"username": "John Smith"}), headers=member_auth_header
     )
     response_two = test_app_with_db.post(
         "/users/profile/summaries/",

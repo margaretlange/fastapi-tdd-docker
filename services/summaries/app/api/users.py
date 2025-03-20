@@ -7,6 +7,7 @@ from app.api import crud
 from app.dependencies import PermissionsValidator, validate_token
 from app.models.tortoise import SummarySchema
 from app.summarizer import generate_summary
+from tortoise.exceptions import IntegrityError
 
 # import pdb
 
@@ -37,7 +38,10 @@ router = APIRouter()
 async def create_user(
     payload: UserPayloadSchema, token: Annotated[dict, Security(validate_token)]
 ) -> UserResponseSchema:
-    user_id = await crud.post_user(payload, token["sub"])
+    try:
+        user_id = await crud.post_user(payload, token["sub"])
+    except IntegrityError:
+        raise HTTPException(status_code=409, detail="User already exists.")
     response_object = {"id": user_id, "username": payload.username}
     return response_object
 

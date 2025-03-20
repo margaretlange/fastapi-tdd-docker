@@ -2,7 +2,6 @@
 
 import json
 
-# import pdb
 # right now set up and clean up are in the tests so they have to run in order
 # this is bad practice according to wikipedia
 
@@ -34,10 +33,18 @@ def test_create_users_invalid_json(test_app, member_auth_header):
 
 def test_create_user(test_app_with_db, member_auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "Jane Doe"}), headers=member_auth_header
+        "/users/", data=json.dumps({"username": "John Smith"}), headers=member_auth_header
     )
     assert response.status_code == 201
-    assert response.json()["username"] == "Jane Doe"
+    assert response.json()["username"] == "John Smith"
+
+
+def test_create_duplicate(test_app_with_db, member_auth_header):
+    response = test_app_with_db.post(
+        "/users/", data=json.dumps({"username": "John Smith"}), headers=member_auth_header
+    )
+    assert response.status_code == 409
+    assert response.json()["detail"] == "User already exists."
 
 
 def test_read_current_active_user(test_app_with_db, member_auth_header):
@@ -45,7 +52,7 @@ def test_read_current_active_user(test_app_with_db, member_auth_header):
     assert response.status_code == 200
     response_dict = response.json()
     assert response_dict["id"]
-    assert response_dict["username"] == "Jane Doe"
+    assert response_dict["username"] == "John Smith"
     assert response_dict["created_at"]
     assert response_dict["auth_sub"]
 
@@ -53,4 +60,4 @@ def test_read_current_active_user(test_app_with_db, member_auth_header):
 def test_remove_current_active_user(test_app_with_db, member_auth_header):
     response = test_app_with_db.delete("/users/profile/", headers=member_auth_header)
     assert response.status_code == 200
-    assert response.json()["username"] == "Jane Doe"
+    assert response.json()["username"] == "John Smith"

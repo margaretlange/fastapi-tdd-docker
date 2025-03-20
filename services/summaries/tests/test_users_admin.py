@@ -7,14 +7,16 @@ import json
 class TestUserAdmin:
     user_id: int = 0
 
-    def test_create_user(self, test_app_with_db, admin_auth_header):
+    # here a member ("John Smith") who is not the admin creates a profile
+    # we wish to test whether the admin can access their information.
+    def test_create_user(self, test_app_with_db, member_auth_header):
         response = test_app_with_db.post(
             "/users/",
-            data=json.dumps({"username": "Jane Doe"}),
-            headers=admin_auth_header,
+            data=json.dumps({"username": "John Smith"}),
+            headers=member_auth_header,
         )
         assert response.status_code == 201
-        assert response.json()["username"] == "Jane Doe"
+        assert response.json()["username"] == "John Smith"
         assert response.json()["id"]
         TestUserAdmin.user_id = response.json()["id"]
 
@@ -25,7 +27,7 @@ class TestUserAdmin:
         assert response.status_code == 200
         response_dict = response.json()
         assert response_dict["id"] == self.user_id
-        assert response_dict["username"] == "Jane Doe"
+        assert response_dict["username"] == "John Smith"
         assert response_dict["created_at"]
         assert response_dict["auth_sub"]
 
@@ -81,4 +83,4 @@ class TestUserAdmin:
             f"/users/{TestUserAdmin.user_id}/", headers=admin_auth_header
         )
         assert response.status_code == 200
-        assert response.json() == {"id": TestUserAdmin.user_id, "username": "Jane Doe"}
+        assert response.json() == {"id": TestUserAdmin.user_id, "username": "John Smith"}
