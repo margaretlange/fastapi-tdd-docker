@@ -74,4 +74,4 @@ RUN chown -R app:app $APP_HOME
 USER app
 
 # run gunicorn
-CMD gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120
+CMD gunicorn --bind 0.0.0.0:8000 app.main:app -w 3 -k uvicorn.workers.UvicornWorker --timeout=120

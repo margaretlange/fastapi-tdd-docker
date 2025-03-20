@@ -6,11 +6,11 @@ services:
       context: ./services/summaries
       ssh:
         - default
-    command: gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120
+    command: gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120 --access-logfile -
     volumes:
       - ./services/summaries:/usr/src/app
     env_file:
-      - .envdev
+      - './services/summaries/.envdev'
     depends_on:   # new
       - web-db
     ports:
@@ -24,3 +24,17 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  client:
+    stdin_open: true
+    build:
+      context: ./services/client
+      dockerfile: Dockerfile
+    ports:
+      - 4040:4040
+    volumes:
+      - './services/client:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    env_file:
+      - './services/client/.env'
+    depends_on:
+      - web

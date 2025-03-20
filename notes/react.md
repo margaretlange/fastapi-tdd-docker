@@ -26,3 +26,12 @@ https://dev-lhn1ufqgkgz8lk5w.us.auth0.com/authorize?
 
 this seems useful too
 https://testdriven.io/blog/fastapi-react/
+
+did i not have this problem b4 because of nginx
+I think i didn't have any calls
+https://stackoverflow.com/questions/77060233/unknown-host-error-calling-containerized-backend-from-frontend
+
+
+CLIENT_ORIGIN_URL=http://localhost:4040
+REACT_APP_API_SERVER_URL=http://localhost:8000
+

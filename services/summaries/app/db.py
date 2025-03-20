@@ -7,6 +7,11 @@ from fastapi import FastAPI
 from tortoise import Tortoise, run_async  # new
 from tortoise.contrib.fastapi import register_tortoise
 
+from app.api.crud import post_user, post_current_active_user_summary
+from app.models.pydantic import UserPayloadSchema, SummaryPayloadSchema
+from app.summarizer import generate_summary
+
+
 log = logging.getLogger("uvicorn")  # new
 
 
@@ -44,15 +49,23 @@ async def generate_schema() -> None:
     await Tortoise.close_connections()
 
 
-# this doesn't work
-# async def seed_db() -> None:
-#    await Tortoise.init(
-#        db_url=os.environ.get("DATABASE_URL"),
-#        modules={"models": ["models.tortoise", "aerich.models"]},
-#    )
-#    print(await post_user({'username': 'Margaret Lange'}, 'google-oauth2|106169556027978612521'))
-#    print(await post_user({'username': 'testtwo@domain.com'}, 'auth0|67c7664f657d0f4f7ac909a6'))
-#    await Tortoise.close_connections()
+# trying to run this from the tortoise shell
+async def seed_db() -> None:
+    ml = UserPayloadSchema(**{'username': 'Margaret Lange'})
+    await post_user(ml, 'google-oauth2|106169556027978612521')
+    test = UserPayloadSchema(**{'username': 'testtwo@domain.com'})
+    await post_user(test, 'auth0|67c7664f657d0f4f7ac909a6')
+    # Trying some summary code next
+    cd_payload = SummaryPayloadSchema(query='Who was Charles Darwin?')
+    al_payload = SummaryPayloadSchema(query='Who was Ada Lovelace?')
+    acd_payload = SummaryPayloadSchema(query='Who was Arthur Conan Doyle?')
+    summary_id, user_id = await post_current_active_user_summary("google-oauth2|106169556027978612521", cd_payload)
+    await generate_summary(summary_id, user_id, str(cd_payload.query))
+    summary_id, user_id = await post_current_active_user_summary("google-oauth2|106169556027978612521", al_payload)
+    await generate_summary(summary_id, user_id, str(al_payload.query))
+    summary_id, user_id = await post_current_active_user_summary("auth0|67c7664f657d0f4f7ac909a6", acd_payload)
+    await generate_summary(summary_id, user_id, str(acd_payload.query))
+
 
 # new
 if __name__ == "__main__":

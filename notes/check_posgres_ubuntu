@@ -45,3 +45,8 @@ GRANT ALL PRIVILEGES ON DATABASE web_dev TO maggie;
 psql -h localhost -U maggie -d web_dev
 
 postgres://maggie:[passwd]@host.docker.internal:5432/web_dev
+
+select auth_sub from "user";
+select * from "user";
+You need quotes because user is a reserved key name.
+https://stackoverflow.com/questions/22256124/cannot-create-a-database-table-named-user-in-postgresql

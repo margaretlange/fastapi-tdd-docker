@@ -1,13 +1,17 @@
+version: '3.8'
+
 services:
   web:
     build:
       context: ./services/summaries
-      dockerfile: Dockerfile.prod
       ssh:
         - default
+    command: gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120
+    volumes:
+      - ./services/summaries:/usr/src/app
     env_file:
       - .envdev
-    depends_on:
+    depends_on:   # new
       - web-db
     ports:
       - 8000:8000
