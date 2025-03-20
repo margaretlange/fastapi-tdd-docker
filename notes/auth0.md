@@ -134,3 +134,8 @@ https://dev.to/sre_panchanan/introduction-to-aws-s3-remote-backend-with-terrafor
 https://stackoverflow.com/questions/69419470/auth0-error-authorization-server-not-configured-with-default-connection#:~:text=Go%20to%20Auth0%20Dashboard%20%3E%20Tenant,users%20by%20username%20and%20password.
 
 https://github.com/fastapi-users/fastapi-users
+
+for creating mock test tokens:
+https://testdriven.io/courses/auth-flask-react/jwt-setup/
+
+for decoding mock test tokens:

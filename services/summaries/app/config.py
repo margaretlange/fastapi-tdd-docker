@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     auth0_client_id: str
     auth0_client_secret: str
 
+    jwt_test_encode_key: str
     test_member_password: str
     test_admin_password: str
 

@@ -1,23 +1,29 @@
 import argparse
-import pdb
+# import pdb
 import jwt
 from auth0.authentication import Database, GetToken
 from auth0.management.users import Users
+import time
+import pathlib
+import os
 
 
-# example sub for admin 'auth0|67c91c0d56e672bbc7bf0e4b'
+def make_token_folder():
+    ts = str(int(time.time()))
+    folder = "%s/test_tokens/%s" % (os.environ['HOME'], ts)
+    pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
+    return folder
 
 
 def create_test_user(args, user_info, admin=False):
     database = Database(args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID)
     response = database.signup(**user_info)
-    # had to do this through dashboard
+    # does next part work?
     U = Users(args.AUTH0_DOMAIN, args.MANAGEMENT_API_KEY)
     if admin:
         U.add_roles(response["_id"], ["admin"])
 
 
-# removing errors since my goal is just inspection
 def validate_token(args, jwt_access_token):
     # pdb.set_trace()
     auth0_issuer_url = f"https://{args.AUTH0_DOMAIN}/"
@@ -33,19 +39,10 @@ def validate_token(args, jwt_access_token):
         audience=args.AUTH0_AUDIENCE,
         issuer=auth0_issuer_url,
     )
-    print(payload)
     return payload
 
 
 def get_test_token_user(args, user_info):
-    token = GetToken(
-        args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID, client_secret=args.AUTH0_CLIENT_SECRET
-    )
-    token = token.login(**user_info)
-    return token["access_token"]
-
-
-def get_spa_token_user(args, user_info):
     token = GetToken(
         args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID, client_secret=args.AUTH0_CLIENT_SECRET
     )
@@ -100,24 +97,15 @@ if __name__ == "__main__":
         "realm": "Username-Password-Authentication",
         "audience": args.AUTH0_AUDIENCE,
     }
-    # I also have admin privileges
 
-   
+    token_folder = make_token_folder()
+
     admin_access_token = get_test_token_user(args, admin_info_token)
-    # print(access_token)
-    print(admin_access_token)
     validate_token(args, admin_access_token)
-    with open('admin_access_jwk.txt', 'w') as fh:
+    with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:
         fh.write(admin_access_token)
-    
-    member_access_token = get_test_token_user(args, member_info_token)
-    # print(access_token)
-    print(member_access_token)
-    validate_token(args, member_access_token)
-    with open('member_access_jwk.txt', 'w') as fh:
-        fh.write(member_access_token)
-    
 
-    # Example usage
-    # create_test_user(args, admin_info, admin=True)
-    #     # token = get_test_token(args)
+    member_access_token = get_test_token_user(args, member_info_token)
+    validate_token(args, member_access_token)
+    with open(f'{token_folder}/member_access_jwk.txt', 'w') as fh:
+        fh.write(member_access_token)

@@ -2,32 +2,72 @@
 
 
 import os
-
+import pdb
 import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
 from app.config import Settings, get_settings
 from app.main import create_application  # updated
-from app.test.auth_utils import get_test_token
+from tests.auth_utils import get_test_token_admin, get_test_token_member, mock_get_test_token_admin, mock_get_test_token_member
+from app.dependencies import validate_token, mock_validate_token
 
 
 def get_settings_override():
     return Settings(testing=1, database_url=os.environ.get("DATABASE_TEST_URL"))
 
 
+def pytest_addoption(parser):
+    parser.addoption("--integration", action="store_true", help="run tests against auth0 authentication")
+
+
+@pytest.fixture(scope="session")
+def integration(request):
+    return request.config.getoption("--integration")
+
+
+@pytest.fixture(scope="session")
+def member_auth_header(integration):
+    if integration:
+        token = get_test_token_member()
+    else:
+        token = mock_get_test_token_member()
+    auth_header = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+    return auth_header
+
+
+@pytest.fixture(scope="session")
+def admin_auth_header(integration):
+    if integration:
+        token = get_test_token_admin()
+    else:
+        token = mock_get_test_token_admin()
+    auth_header = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+    return auth_header
+
+
 @pytest.fixture(scope="module")
-def test_app():
-    app = create_application()  # new
+def test_app(integration):
+    app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
+    if not integration:
+        app.dependency_overrides[validate_token] = mock_validate_token
     with TestClient(app) as test_client:  # updated
         yield test_client
 
 
 @pytest.fixture(scope="module")
-def test_app_with_db():
+def test_app_with_db(integration):
     app = create_application()
     app.dependency_overrides[get_settings] = get_settings_override
+    if not integration:
+        app.dependency_overrides[validate_token] = mock_validate_token
     register_tortoise(
         app,
         db_url=os.environ.get("DATABASE_TEST_URL"),
@@ -39,21 +79,4 @@ def test_app_with_db():
         yield test_client
 
 
-@pytest.fixture(scope="session")
-def member_auth_header():
-    token = get_test_token('jwt_test_token_member')
-    auth_header = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-    }
-    return auth_header
 
-
-@pytest.fixture(scope="session")
-def admin_auth_header():
-    token = get_test_token('jwt_test_token_admin')
-    auth_header = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-    }
-    return auth_header
