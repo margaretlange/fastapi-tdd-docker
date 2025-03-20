@@ -1,5 +1,6 @@
 # helpful
 
+
 # again
 # normal run
 docker-compose exec web python -m pytest
@@ -50,3 +51,8 @@ docker-compose exec web-db psql -U postgres
 command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 new command
 gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120
+
+tortoise-cli
+pip install tortoise-cli
+
+docker-compose exec web tortoise-cli -c app.db.TORTOISE_ORM shell

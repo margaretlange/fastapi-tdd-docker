@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     environment: str = "dev"
     testing: bool = 0
     database_url: AnyUrl = None
+    client_origin_url: str
 
     auth0_audience: str
     auth0_domain: str

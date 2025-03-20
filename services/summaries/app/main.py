@@ -8,23 +8,23 @@ from fastapi import FastAPI
 from app.api import status, users
 from app.db import init_db
 
-# from app.config import get_settings
+from app.config import get_settings
 
-# from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 log = logging.getLogger("uvicorn")
 
 
 def create_application() -> FastAPI:
     application = FastAPI()
-    # settings = get_settings()
-    # application.add_middleware(
-    #    CORSMiddleware,
-    #    allow_origins=[settings.client_origin_url],
-    #    allow_methods=["*"],
-    #    allow_headers=["Authorization", "Content-Type"],
-    #    max_age=86400,
-    # )
+    settings = get_settings()
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=[settings.client_origin_url],
+        allow_methods=["*"],
+        allow_headers=["Authorization", "Content-Type"],
+        max_age=86400,
+    )
 
     application.include_router(status.router)
     application.include_router(users.router, prefix="/users", tags=["users"])
