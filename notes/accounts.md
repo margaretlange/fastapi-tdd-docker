@@ -7,6 +7,8 @@ tavily api key
 
 AWS Route 53
 mmldemo.com ($14) autorenew on
+
+
 elastic ip address
 
 possibly going to sign up for container registry
@@ -17,9 +19,6 @@ leftover elasticbeanstalk s3 bucket??
 
 
 google app
-but now time to sign up for auth0
-AUTH0_DOMAIN
-AUTH0_CLIENT_ID
-AUTH0_CLIENT_SECRET
+and github app for auth0 integration
 
 auth0 both api and application. trying to figure out how to develop without calling them a zillion times

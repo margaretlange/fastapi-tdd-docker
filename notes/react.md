@@ -38,3 +38,6 @@ REACT_APP_API_SERVER_URL=http://localhost:8000
 for hot reloading
 WATCHPACK_POLLING=true
 in .env file
+
+in order to get signup to work I had to choose the default theme for the "new" sign in.
+

@@ -56,3 +56,10 @@ in client redirect list
 
 OpenAPI security scheme
 
+
+okay more on this
+https://developer.auth0.com/resources/labs/authentication/google-social-connection-to-login#introduction
+also looking at finances wiki
+
+i'm putting the secret into terraform plain text should fix later
+https://blog.fahhem.com/2024/01/terraform-gcp-2024/

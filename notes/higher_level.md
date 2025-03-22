@@ -1,10 +1,11 @@
 supporting repos
 learn-terraform-aws-instance in gitlab
-s3 backup creation for aws: create-terraform-backup in gitlab 
+s3 backup creation for aws: create-terraform-backend in gitlab 
 
 auth0-terraform in gitlab
-s3 backup creation for aws: create-terraform-backup-auth0 in gitlab
+s3 backup creation for aws: create-terraform-backend-auth0 in gitlab
 
+I can probably combine the two terraform back up files
 main repo in github
 
 Infrastructure:

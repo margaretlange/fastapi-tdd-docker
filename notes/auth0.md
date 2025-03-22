@@ -141,3 +141,7 @@ https://testdriven.io/courses/auth-flask-react/jwt-setup/
 for decoding mock test tokens:
 
 see testing readme for the two options
+https://developer.auth0.com/resources/labs/authentication/google-social-connection-to-login#introduction
+
+
+see google.md for the fact that I DID have to set up a google project
