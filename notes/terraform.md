@@ -53,33 +53,6 @@ https://registry.terraform.io/providers/auth0/auth0/latest/docs/guides/quickstar
 copy config locally
 login
 generate https://registry.terraform.io/providers/auth0/auth0/latest/docs/guides/generate_terraform_config
+copy to existing repo
 
-terraform {
-
-  backend "s3" {
-    bucket         = "mml-tf-state-authentication"
-    key            = "global/s3/terraform.tfstate"
-    region         = "us-west-2"
-    use_lockfile = true
-    encrypt        = true
-  }
-
-}
-
-mv generate and import
-
-https://stackoverflow.com/questions/55265203/terraform-delete-all-resources-except-one
-
-I don't want these:
-auth0_tenant.tenant
-auth0_resource_server.auth0_management_api
-auth0_client_grant.xbahqhxexauobrrnchqwfvuiebkvdrhb_https_dev_lhn1ufqgkgz8lk5w_us_auth0_com_api_v2
-auth0_client_credentials.terraform_provider_auth0
-auth0_client.terraform_provider_auth0
-auth0_resource_server_scopes.auth0_management_api
-
-pull out everything else generated
-remove these above from state
-destroy everything
-reinit terraform
-create everything minus management api stuff
+aws_s3_bucket.terraform_state_bucket_auth

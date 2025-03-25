@@ -1,8 +1,8 @@
 import argparse
-# import pdb
+import pdb
 import jwt
 from auth0.authentication import Database, GetToken
-from auth0.management.users import Users
+from auth0.management import Auth0
 import time
 import pathlib
 import os
@@ -15,18 +15,20 @@ def make_token_folder():
     return folder
 
 
-def create_test_user(args, user_info, admin=False):
-    database = Database(args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID)
+def create_test_user(user_info, token, admin=False):
+    database = Database(os.environ['AUTH0_DOMAIN'], os.environ['TEST_AUTH0_CLIENT_ID'])
     response = database.signup(**user_info)
-    # does next part work?
-    U = Users(args.AUTH0_DOMAIN, args.MANAGEMENT_API_KEY)
+    short_id = response["_id"]
+    user_id = f"auth0|{short_id}"
     if admin:
-        U.add_roles(response["_id"], ["admin"])
+        auth0 = Auth0(os.environ['AUTH0_DOMAIN'], token)
+        roles = auth0.roles.list()
+        role_id = roles['roles'][0]['id']
+        auth0.roles.add_users(role_id, [user_id])
 
 
-def validate_token(args, jwt_access_token):
-    # pdb.set_trace()
-    auth0_issuer_url = f"https://{args.AUTH0_DOMAIN}/"
+def validate_token(jwt_access_token, audience):
+    auth0_issuer_url = f"https://{os.environ['AUTH0_DOMAIN']}/"
     # make sure to install cryptography library
     algorithm = "RS256"
     jwks_uri = f"{auth0_issuer_url}.well-known/jwks.json"
@@ -36,76 +38,90 @@ def validate_token(args, jwt_access_token):
         jwt_access_token,
         jwt_signing_key,
         algorithms=algorithm,
-        audience=args.AUTH0_AUDIENCE,
+        audience=audience,
         issuer=auth0_issuer_url,
     )
     return payload
 
 
-def get_test_token_user(args, user_info):
+def get_test_token_user(user_info):
     token = GetToken(
-        args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID, client_secret=args.AUTH0_CLIENT_SECRET
+        os.environ['AUTH0_DOMAIN'], os.environ['TEST_AUTH0_CLIENT_ID'], client_secret=os.environ['TEST_AUTH0_CLIENT_SECRET']
     )
     token = token.login(**user_info)
     return token["access_token"]
 
 
-def get_test_token(args):
+def get_test_token():
     token = GetToken(
-        args.AUTH0_DOMAIN, args.AUTH0_CLIENT_ID, client_secret=args.AUTH0_CLIENT_SECRET
+        os.environ['TEST_AUTH0_DOMAIN'], os.environ['TEST_AUTH0_CLIENT_ID'], client_secret=os.environ['TEST_AUTH0_CLIENT_SECRET']
     )
-    token = token.client_credentials(args.AUTH0_AUDIENCE)
+    token = token.client_credentials(os.environ['AUTH0_AUDIENCE'])
+    token = token["access_token"]
+    return token
+
+
+def get_management_token():
+    domain = os.environ['AUTH0_DOMAIN']
+    token = GetToken(
+        domain, os.environ['AUTH0_CLIENT_ID'], client_secret=os.environ['AUTH0_CLIENT_SECRET']
+    )
+    management_audience = f'https://{domain}/api/v2/'
+    token = token.client_credentials(management_audience)
     token = token["access_token"]
     return token
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Auth0 script to create user and get tokens"
-    )
-    parser.add_argument("--AUTH0_DOMAIN", required=True, help="Auth0 domain")
-    parser.add_argument("--AUTH0_CLIENT_ID", required=True, help="Auth0 client ID")
-    parser.add_argument(
-        "--AUTH0_CLIENT_SECRET", required=True, help="Auth0 client secret"
-    )
-    parser.add_argument("--AUTH0_AUDIENCE", required=True, help="Auth0 audience")
-    parser.add_argument("--MEMBER_PASSWORD", required=True, help="Test member password")
-    parser.add_argument("--ADMIN_PASSWORD", required=True, help="Test admin password")
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--refresh_tokens", action="store_true",
+                                help="Refresh test tokens for admin and member user")
+    parser.add_argument("--create_users", action="store_true",
+                                help="Create admin and member user")
     args = parser.parse_args()
+    refresh_tokens = args.refresh_tokens
+    create_users = args.create_users
     member_info = {
         "email": "testtwo@domain.com",
-        "password": args.MEMBER_PASSWORD,
+        "password": os.environ['AUTH0_TEST_MEMBER_PASSWORD'],
         "connection": "Username-Password-Authentication",
     }
 
     admin_info = {
         "email": "adminlady@domain.com",
-        "password": args.ADMIN_PASSWORD,
+        "password": os.environ['AUTH0_TEST_ADMIN_PASSWORD'],
         "connection": "Username-Password-Authentication",
     }
 
     admin_info_token = {
         "username": "adminlady@domain.com",
-        "password": args.ADMIN_PASSWORD,
+        "password": os.environ['AUTH0_TEST_ADMIN_PASSWORD'],
         "realm": "Username-Password-Authentication",
-        "audience": args.AUTH0_AUDIENCE,
+        "audience": os.environ['AUTH0_AUDIENCE']
     }
     member_info_token = {
         "username": "testtwo@domain.com",
-        "password": args.MEMBER_PASSWORD,
+        "password": os.environ['AUTH0_TEST_MEMBER_PASSWORD'],
         "realm": "Username-Password-Authentication",
-        "audience": args.AUTH0_AUDIENCE,
+        "audience": os.environ['AUTH0_AUDIENCE']
     }
+    if refresh_tokens:
+        token_folder = make_token_folder()
 
-    token_folder = make_token_folder()
+        admin_access_token = get_test_token_user(admin_info_token)
+        validate_token(admin_access_token, os.environ['AUTH0_AUDIENCE'])
+        with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:
+            fh.write(admin_access_token)
 
-    admin_access_token = get_test_token_user(args, admin_info_token)
-    validate_token(args, admin_access_token)
-    with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:
-        fh.write(admin_access_token)
+        member_access_token = get_test_token_user(member_info_token)
+        validate_token(member_access_token, os.environ['AUTH0_AUDIENCE'])
+        with open(f'{token_folder}/member_access_jwk.txt', 'w') as fh:
+            fh.write(member_access_token)
 
-    member_access_token = get_test_token_user(args, member_info_token)
-    validate_token(args, member_access_token)
-    with open(f'{token_folder}/member_access_jwk.txt', 'w') as fh:
-        fh.write(member_access_token)
+    if create_users:
+        token = get_management_token()
+        domain = os.environ['AUTH0_DOMAIN']
+        audience = f'https://{domain}/api/v2/'
+        validate_token(token, audience)
+        create_test_user(member_info, token, admin=False)
+        create_test_user(admin_info, token, admin=True)

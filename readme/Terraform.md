@@ -77,9 +77,10 @@ AUTH0_DOMAIN (your tenant domain)
 AUTH0_CLIENT_ID (client id for your "explorer application")
 AUTH0_CLIENT_SECRET (client secret id for your "explorer application"
 
-Edit the s3 backend by hand to show the correct bucket.
+Edit the s3 backend specification by hand to show the correct bucket.
 Then you should be able to proceed
 `terraform init`
+- terraform validate
 `terraform plan`
 `terraform apply`
 
