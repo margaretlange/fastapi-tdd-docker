@@ -30,9 +30,9 @@
 
 ## Set up terraform backends using Terraform 
 Set the following variables in your bash file	
-   - TF_VAR_aws_state_bucket_name
-   - TF_VAR_auth_state_bucket_name
-   - TF_VAR_region
+   - export TF_VAR_aws_state_bucket_name
+   - export TF_VAR_auth_state_bucket_name
+   - export TF_VAR_region
 - terraform init
 - terraform validate
 - terraform plan
@@ -51,20 +51,35 @@ variables.
 - was able to get info about existing domain with `terraform plan -generate-config-out=generated.tf`
 - terraform apply
 
-## Install auth0 dependencies with terraform
-
-
 ## Manually make a google oauth app to support social login (not supported in terraform unfortunately) 
 I followed the instructions here:
 
 Instead of updating your connection through the website, keep the client id and secret id for updating auth0 terraform.
+To do so add the following variables to your bash file:
+- export TF_VAR_google_oauth_client_id
+- export TF_VAR_google_oauth_client_secret
 
 ## Manually make a github oath app to support social login (not supported in terraform unfortunately)
 I followed the instructions here:
 https://developer.auth0.com/resources/labs/authentication/authenticate-using-github#introduction
 Instead of updating your connection through the website, keep the client id and secret id for updating auth0 terraform.
+To do so add the following variables to your bash file:
 
-## Update auth0 terraform
+- export TF_VAR_github_oauth_client_id
+- export TF_VAR_github_oauth_client_secret
 
+## Install auth0 dependencies with terraform
+Create an application to get the management api keys.  
+https://registry.terraform.io/providers/auth0/auth0/latest/docs/guides/quickstart
 
+Set up the management config and api keys in your bash environment
+AUTH0_DOMAIN (your tenant domain)
+AUTH0_CLIENT_ID (client id for your "explorer application")
+AUTH0_CLIENT_SECRET (client secret id for your "explorer application"
 
+Then you should be able to proceed
+`terraform init`
+`terraform plan`
+`terraform apply`
+
+If you want to destroy all your infrastructure, you will need to destroy through terraform first and then manually destroy the management resources.
