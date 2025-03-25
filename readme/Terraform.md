@@ -72,14 +72,15 @@ To do so add the following variables to your bash file:
 Create an application to get the management api keys.  
 https://registry.terraform.io/providers/auth0/auth0/latest/docs/guides/quickstart
 
-Set up the management config and api keys in your bash environment
+Set up your tenant domain and management api keys in your bash environment
 AUTH0_DOMAIN (your tenant domain)
 AUTH0_CLIENT_ID (client id for your "explorer application")
 AUTH0_CLIENT_SECRET (client secret id for your "explorer application"
 
+Edit the s3 backend by hand to show the correct bucket.
 Then you should be able to proceed
 `terraform init`
 `terraform plan`
 `terraform apply`
 
-If you want to destroy all your infrastructure, you will need to destroy through terraform first and then manually destroy the management resources.
+If you want to destroy all your auth0 infrastructure, you will need to destroy through terraform first and then manually destroy the management resources.
