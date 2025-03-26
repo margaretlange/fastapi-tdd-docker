@@ -6,11 +6,11 @@ services:
       context: ./services/summaries
       ssh:
         - default
-    command: gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120 --access-logfile -
+    command: gunicorn --bind 0.0.0.0:8000 app.main:app -w 3 -k uvicorn.workers.UvicornWorker --timeout=120 --access-logfile -
     volumes:
       - ./services/summaries:/usr/src/app
     env_file:
-      - './services/summaries/.envdev'
+      - './services/summaries/.env'
     depends_on:   # new
       - web-db
     ports:

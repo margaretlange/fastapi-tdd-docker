@@ -7,5 +7,4 @@ htmlcov
 .yarnrc.yml
 node_modules
 
-.envdev
 .env

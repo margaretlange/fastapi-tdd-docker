@@ -23,7 +23,7 @@ export const ProfilePage = () => {
               information of an authenticated user.
             </span>
             <span>
-              <strong>Only authenticated users can access this page.</strong>
+              <strong>Authenticated users only can access this page.</strong>
             </span>
           </p>
           <div className="profile-grid">

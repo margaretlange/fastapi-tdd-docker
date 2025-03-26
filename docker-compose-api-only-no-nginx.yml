@@ -10,7 +10,7 @@ services:
     volumes:
       - ./services/summaries:/usr/src/app
     env_file:
-      - .envdev
+      - ./services/summaries/.env
     depends_on:   # new
       - web-db
     ports:
