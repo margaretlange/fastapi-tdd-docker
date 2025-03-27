@@ -1,3 +1,5 @@
+docker stop fastapi-tdd
+docker rm fastapi-tdd
 docker build \
        --tag testingapi:latest \
        --file ./services/summaries/Dockerfile.prod \
@@ -14,4 +16,6 @@ docker run -d \
 testingapi:latest
 
 docker exec fastapi-tdd python -m pytest .
+docker stop fastapi-tdd
+docker rm fastapi-tdd
 
