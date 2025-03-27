@@ -4,13 +4,11 @@
 import logging
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import status, users
-from app.db import init_db
-
 from app.config import get_settings
-
-from fastapi.middleware.cors import CORSMiddleware
+from app.db import init_db
 
 log = logging.getLogger("uvicorn")
 

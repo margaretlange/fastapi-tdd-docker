@@ -21,7 +21,9 @@ def setup_user_info(test_app_with_db, monkeypatch, member_auth_header):
 
     print("Adding current active user and summary to database")
     response_one = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "John Smith"}), headers=member_auth_header
+        "/users/",
+        data=json.dumps({"username": "John Smith"}),
+        headers=member_auth_header,
     )
     response_two = test_app_with_db.post(
         "/users/profile/summaries/",

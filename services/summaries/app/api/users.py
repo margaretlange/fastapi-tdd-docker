@@ -2,12 +2,12 @@ import logging
 from typing import Annotated, List
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Path, Security
+from tortoise.exceptions import IntegrityError
 
 from app.api import crud
 from app.dependencies import PermissionsValidator, validate_token
 from app.models.tortoise import SummarySchema
 from app.summarizer import generate_summary
-from tortoise.exceptions import IntegrityError
 
 # import pdb
 

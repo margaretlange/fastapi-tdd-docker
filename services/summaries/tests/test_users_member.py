@@ -33,7 +33,9 @@ def test_create_users_invalid_json(test_app, member_auth_header):
 
 def test_create_user(test_app_with_db, member_auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "John Smith"}), headers=member_auth_header
+        "/users/",
+        data=json.dumps({"username": "John Smith"}),
+        headers=member_auth_header,
     )
     assert response.status_code == 201
     assert response.json()["username"] == "John Smith"
@@ -41,7 +43,9 @@ def test_create_user(test_app_with_db, member_auth_header):
 
 def test_create_duplicate(test_app_with_db, member_auth_header):
     response = test_app_with_db.post(
-        "/users/", data=json.dumps({"username": "John Smith"}), headers=member_auth_header
+        "/users/",
+        data=json.dumps({"username": "John Smith"}),
+        headers=member_auth_header,
     )
     assert response.status_code == 409
     assert response.json()["detail"] == "User already exists."

@@ -28,7 +28,7 @@ docker run \
 -p 5003:8765 \
 testingapi:latest
 
-
+old version
 docker run \
 --name fastapi-tdd \
 -e PORT=8765 \

@@ -83,4 +83,7 @@ class TestUserAdmin:
             f"/users/{TestUserAdmin.user_id}/", headers=admin_auth_header
         )
         assert response.status_code == 200
-        assert response.json() == {"id": TestUserAdmin.user_id, "username": "John Smith"}
+        assert response.json() == {
+            "id": TestUserAdmin.user_id,
+            "username": "John Smith",
+        }
