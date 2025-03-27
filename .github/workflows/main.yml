@@ -71,6 +71,10 @@ jobs:
             ${{ env.API_IMAGE }}:latest
       - name: Pytest
         run: docker exec test-api python -m pytest .
+      - name: Display Container logs if tests faile
+        if: failure()
+        run: |
+          docker logs test-api
       - name: Flake8
         run: docker exec test-api python -m flake8 .
       - name: Black
