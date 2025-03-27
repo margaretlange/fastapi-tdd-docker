@@ -57,8 +57,6 @@ jobs:
         run: docker pull ${{ env.API_IMAGE }}:latest || true
       - name: Run container
         env:
-          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
-          TEST_MEMBER_PASSWORD: ${{ secrets.TEST_MEMBER_PASSWORD }}
           JWT_TEST_ENCODE_KEY: ${{ secrets.JWT_TEST_ENCODE_KEY }}
         run: |
           docker run \
