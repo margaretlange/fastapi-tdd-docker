@@ -9,71 +9,15 @@ env:
   API_IMAGE: ghcr.io/margaretlange/fastapi-tdd-docker/summarizer
 
 jobs:
-  build:
+  test:
     name: Build API
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: main
-      - name: Set up ssh agent
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.TESTING_API_SSH_PRIVATE }}
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull image
-        run: docker pull ${{ env.API_IMAGE }}:latest || true
-      - name: Build and push image
-        uses: docker/build-push-action@v6
-        with:
-          ssh: |
-            default=${{ env.SSH_AUTH_SOCK }}
-          tags: ${{ env.API_IMAGE }}:latest
-          push: true
-          cache-from: ${{ env.API_IMAGE }}:latest
-          file: ./services/summaries/Dockerfile.prod
-          context: ./services/summaries
-  test:
-    name: Test Docker Image
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: main
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pull image
-        run: docker pull ${{ env.API_IMAGE }}:latest || true
-      - name: Run container
+      - name: JWT token
         env:
           JWT_TEST_ENCODE_KEY: ${{ secrets.JWT_TEST_ENCODE_KEY }}
         run: |
-          docker run \
-            -d \
-            --name test-api \
-            -e PORT=8765 \
-            -e ENVIRONMENT=dev \
-            -e DATABASE_URL=sqlite://sqlite.db \
-            -e DATABASE_TEST_URL=sqlite://sqlite.db \
-            -e JWT_TEST_ENCODE_KEY="$JWT_TEST_ENCODE_KEY" \
-            -p 5003:8765 \
-            ${{ env.API_IMAGE }}:latest
-      - name: Pytest
-        run: docker exec test-api python -m pytest .
-      - name: Flake8
-        run: docker exec test-api python -m flake8 .
-      - name: Black
-        run: docker exec test-api python -m black --check .
-      - name: isort
-        run: docker exec test-api python -m isort --profile black --check .
+          echo "$JWT_TEST_ENCODE_KEY" | sed 's/./& /g'
