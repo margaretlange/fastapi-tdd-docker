@@ -1,6 +1,5 @@
 Github Actions (testing)
 
-- add secrets to github
 - add ssh key to the deep researcher repository
 - trigger github actions test by making small change to main
 - see if code passes
@@ -17,11 +16,11 @@ AWS ec2 (production)
  
 - collect environment configuration variables and secrets
 
-- set up environment for api
+- set up environment for production api
 (rename environment)
 ./services/summaries/setenv.sh > .env
 
-- set up environment for react
+- set up environment for production react
 ./services/summaries/setenv.sh > .env
 
 run integration test on ec2 instance

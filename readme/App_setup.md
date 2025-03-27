@@ -1,17 +1,15 @@
 - collect environment configuration variables and secrets
-  - JWT_TEST_TOKEN should be a 50 character random string 
   - API_ENVIRONMENT is dev and NODE_ENV is development
   - CLIENT_ORIGIN_URL is "http://localhost:4040"
   - REACT_APP_AUTH0_CALLBACK_URL is "http://localhost:4040/callback"
   - API_URL is "http://localhost:8000"
   
-
   - test user and admin password should be strong passwords
   - for auth0 information, you will need to get it from the auth0 website in the settings of the test api application and the react application
-   - WATCH_POLLING is true
-- add two test users to the auth0 tenant database
-activate venv
+   - WATCH_POLLING is true for development
 
+- once you are done added all the configuration variables, add two test users to the auth0 tenant database
+activate venv
 python3 scripts/auth0_utils.py --create_users
 
 - set up local environment files for api
@@ -23,7 +21,7 @@ python3 scripts/auth0_utils.py --create_users
 ./services/summaries/setenv.sh > .env
 
 - Set up local ssh key to pull the git deep researcher repository securely 
-  - you must add your ssh key to your git account
+  - you must add this ssh key to your git account
 - test back end only
 
 docker-compose -f docker-compose-api-only-no-nginx.yml up --build -d
