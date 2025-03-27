@@ -68,3 +68,9 @@ If you want to destroy all your auth0 infrastructure, you will need to destroy t
 ## Install github actions variables with terraform
 -gh auth login and then use that shell
 - set TF_VAR_JWT_TEST_ENCODE_KEY to random 50 character string
+     export TF_VAR_testing_api_ssh_private
+ export TF_VAR_testing_api_ssh_public
+export TF_VAR_main_repository
+export TF_VAR_researcher_repository
+initialize infrastructure via terraform
+

@@ -1,6 +1,5 @@
 Github Actions (testing)
 
-- add ssh key to the deep researcher repository
 - trigger github actions test by making small change to main
 - see if code passes
 
