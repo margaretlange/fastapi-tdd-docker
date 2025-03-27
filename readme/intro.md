@@ -7,11 +7,12 @@
 
 ### Repositories
 - Terraform
-  - aws backends for storing state
-  - aws main for infrastructure
-  - auth0 for infrastructure
-- Fork of ollama deep researcher code
-- My main app code
+  - aws backends for storing state (gitlab)
+  - aws for infrastructure (gitlab)
+  - auth0 for infrastructure (gitlab)
+  - github for infrastructure (gitlab)
+- Fork of ollama deep researcher code (github)
+- My main app code (github)
 
 ### Accounts needed
 - Tavily account (for the algorithm)

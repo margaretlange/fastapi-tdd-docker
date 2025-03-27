@@ -4,11 +4,13 @@
 - install terraform. I tested my infrastructure code using version 1.11.2, the latest version as of March 21, 2025.
   - https://developer.hashicorp.com/terraform/install
 - install and configure the aws client using your aws identity
+- install and configure the github client
 
 ## Set up terraform backends using Terraform 
 Set the following variables in your bash file	
    - export TF_VAR_aws_state_bucket_name
    - export TF_VAR_auth_state_bucket_name
+   - export TF_VAR_github_state_bucket_name
    - export TF_VAR_region
 - terraform init
 - terraform validate
@@ -62,3 +64,6 @@ Then you should be able to proceed
 `terraform apply`
 
 If you want to destroy all your auth0 infrastructure, you will need to destroy through terraform first and then manually destroy the management resources.
+
+## Install github actions variables with terraform
+-gh auth login and then use that shell

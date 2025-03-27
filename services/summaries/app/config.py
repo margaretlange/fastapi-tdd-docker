@@ -13,16 +13,18 @@ class Settings(BaseSettings):
     environment: str = "dev"
     testing: bool = 0
     database_url: AnyUrl = None
-    client_origin_url: str
-
-    auth0_audience: str
-    auth0_domain: str
-    auth0_client_id: str
-    auth0_client_secret: str
-
     jwt_test_encode_key: str
-    test_member_password: str
-    test_admin_password: str
+
+    client_origin_url: str | None = None
+
+    # for simple testing setup on github actions these aren't needed
+    auth0_audience: str | None = None
+    auth0_domain: str | None = None
+    auth0_client_id: str | None = None
+    auth0_client_secret: str | None = None
+
+    test_member_password: str | None = None
+    test_admin_password: str | None = None
 
     jwt_test_token_member: str | None = None
     jwt_test_token_admin: str | None = None
