@@ -1,0 +1,32 @@
+4d281c5d38d531794211d3dc373d56f649becd54eb130917808d83f06f9f04a5
+Digest: sha256:f51ff8860f1a66f82e576c7cd81de6b5e7819b8fbfb34219917e763f2861321d
+ 
+
+File "/home/app/web/app/models/tortoise.py", line 27, in <module>
+    SummarySchema = pydantic_model_creator(TextSummary)  # new
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/pydantic/creator.py", line 356, in pydantic_model_creator
+    model = get_submodel(fdesc["python_type"])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/pydantic/creator.py", line 321, in get_submodel
+    pmodel = _pydantic_recursion_protector(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/pydantic/creator.py", line 108, in _pydantic_recursion_protector
+    return pydantic_model_creator(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/pydantic/creator.py", line 428, in pydantic_model_creator
+    model = create_model(
+            ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 1762, in create_model
+    return meta(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/_internal/_model_construction.py", line 110, in __new__
+    config_wrapper = ConfigWrapper.for_model(bases, namespace, kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/_internal/_config.py", line 128, in for_model
+    raise PydanticUserError(
+pydantic.errors.PydanticUserError: `model_config` cannot be used as a model field name. Use `model_config` for model configuration.
+
+For further information visit https://errors.pydantic.dev/2.11/u/model-config-invalid-field-name
+
+I had to go down to 2.10.6 pydantic and 2.27.2 pydantic core

@@ -17,7 +17,6 @@ def test_create_users_invalid_json(test_app, member_auth_header):
                 "loc": ["body", "username"],
                 "msg": "Field required",
                 "type": "missing",
-                "url": "https://errors.pydantic.dev/2.10/v/missing",
             }
         ]
     }

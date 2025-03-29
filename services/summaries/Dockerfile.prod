@@ -66,6 +66,7 @@ RUN pip install -r requirements.txt
 
 # add app
 COPY . .
+RUN pip freeze > $APP_HOME/requirements_freeze.txt 
 
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME

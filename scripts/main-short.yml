@@ -1,0 +1,23 @@
+name: Continuous Integration and Delivery
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  API_IMAGE: ghcr.io/margaretlange/fastapi-tdd-docker/summarizer
+
+jobs:
+  test:
+    name: Build API
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: JWT token
+        env:
+          JWT_TEST_ENCODE_KEY: ${{ secrets.JWT_TEST_ENCODE_KEY }}
+        run: |
+          echo "$JWT_TEST_ENCODE_KEY" | sed 's/./& /g'

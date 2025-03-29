@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     jwt_test_token_member: str | None = None
     jwt_test_token_admin: str | None = None
 
+    pydantic_error_include_url: int = 1
+
     @classmethod
     @validator("client_origin_url", "auth0_audience", "auth0_domain")
     def check_not_empty(cls, v):

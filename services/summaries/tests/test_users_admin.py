@@ -46,7 +46,6 @@ class TestUserAdmin:
                     "loc": ["path", "id"],
                     "msg": "Input should be greater than 0",
                     "type": "greater_than",
-                    "url": "https://errors.pydantic.dev/2.10/v/greater_than",
                 }
             ]
         }
@@ -73,7 +72,6 @@ class TestUserAdmin:
                     "loc": ["path", "id"],
                     "msg": "Input should be greater than 0",
                     "type": "greater_than",
-                    "url": "https://errors.pydantic.dev/2.10/v/greater_than",
                 }
             ]
         }

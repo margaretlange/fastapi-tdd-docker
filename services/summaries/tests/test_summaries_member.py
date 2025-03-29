@@ -52,7 +52,6 @@ def test_create_summaries_invalid_json(test_app, member_auth_header):
                 "loc": ["body", "query"],
                 "msg": "Field required",
                 "type": "missing",
-                "url": "https://errors.pydantic.dev/2.10/v/missing",
             }
         ]
     }
@@ -112,7 +111,6 @@ def test_read_summary_incorrect_id(
                 "loc": ["path", "id"],
                 "msg": "Input should be greater than 0",
                 "type": "greater_than",
-                "url": "https://errors.pydantic.dev/2.10/v/greater_than",
             }
         ]
     }
@@ -184,7 +182,6 @@ def test_remove_summary_incorrect_id(
                 "loc": ["path", "id"],
                 "msg": "Input should be greater than 0",
                 "type": "greater_than",
-                "url": "https://errors.pydantic.dev/2.10/v/greater_than",
             }
         ]
     }
@@ -236,7 +233,6 @@ def test_update_summary(test_app_with_db, monkeypatch, member_auth_header):
                     "msg": "Input should be greater than 0",
                     "input": "0",
                     "ctx": {"gt": 0},
-                    "url": "https://errors.pydantic.dev/2.10/v/greater_than",
                 }
             ],
         ],
@@ -250,14 +246,12 @@ def test_update_summary(test_app_with_db, monkeypatch, member_auth_header):
                     "loc": ["body", "query"],
                     "msg": "Field required",
                     "input": {},
-                    "url": "https://errors.pydantic.dev/2.10/v/missing",
                 },
                 {
                     "type": "missing",
                     "loc": ["body", "summary"],
                     "msg": "Field required",
                     "input": {},
-                    "url": "https://errors.pydantic.dev/2.10/v/missing",
                 },
             ],
         ],
@@ -271,7 +265,6 @@ def test_update_summary(test_app_with_db, monkeypatch, member_auth_header):
                     "loc": ["body", "summary"],
                     "msg": "Field required",
                     "input": {"query": "Who was Charles Darwin?"},
-                    "url": "https://errors.pydantic.dev/2.10/v/missing",
                 }
             ],
         ],

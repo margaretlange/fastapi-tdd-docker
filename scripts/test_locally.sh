@@ -16,6 +16,8 @@ docker run -d \
 testingapi:latest
 
 docker exec fastapi-tdd python -m pytest .
-docker stop fastapi-tdd
-docker rm fastapi-tdd
+docker cp fastapi-tdd:/home/app/web/requirement_freeze.txt ./services/summaries/requirement_freeze.txt
+
+#docker stop fastapi-tdd
+#docker rm fastapi-tdd
 
