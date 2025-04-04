@@ -30,6 +30,7 @@ variables.
 - was able to get info about existing domain with `terraform plan -generate-config-out=generated.tf`
 - terraform apply
 
+- Manually Update at Registrar: You'll need to manually update the name servers at your domain registrar (e.g., GoDaddy, Namecheap) to match the ones assigned by AWS. 
 ## Manually make a google oauth app to support social login (not supported in terraform unfortunately) 
 I followed the instructions here:
 
