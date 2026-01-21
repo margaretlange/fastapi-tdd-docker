@@ -1,12 +1,13 @@
 # How to provision infrastructure for the REST api and react frontend stub
 
-### Clients and Installations
-- install terraform. I tested my infrastructure code using version 1.11.2, the latest version as of March 21, 2025.
-  - https://developer.hashicorp.com/terraform/install
-- install and configure the aws client using your aws identity
-- install and configure the github client
 
-## Set up terraform backends using Terraform 
+## Clients and Installations
+- [Install terraform](https://developer.hashicorp.com/terraform/install). I tested my infrastructure code using version 1.11.2, the latest version as of March 21, 2025.
+- Install and configure the [aws client](https://aws.amazon.com/cli/) using your aws identity.
+- Install and configure the [github client](https://cli.github.com/).
+
+### Set up terraform backends in s3 using Terraform 
+Folder is create-terraform-backend
 Set the following variables in your bash file	
    - export TF_VAR_aws_state_bucket_name
    - export TF_VAR_auth_state_bucket_name
@@ -17,22 +18,25 @@ Set the following variables in your bash file
 - terraform plan
 - terraform apply
 
-## Install aws infrastructure with terraform
-- create a new ssh key for logging into the server or find an existing one you are comfortable with using that you haven't
-already added to s3
-- add the following variables to .bashrc or .bash_profile
+### Install aws infrastructure with terraform
+- Folder is learn-terraform-aws-instance
+- Create a new ssh key for logging into the server or find an existing one you are comfortable with using that you haven't already added to aws.
+- Add the following variables to .bashrc or .bash_profile
    - TF_VAR_domain_name
    - TF_VAR_local_ssh_key_name
 - modify the main.tf file's backend block by hand to include the correct bucket name and region, as this portion can't use
 variables.
 - terraform init
 - terraform validate
-- was able to get info about existing domain with `terraform plan -generate-config-out=generated.tf`
+- was able to get info about existing domain with `terraform plan -generate-config-out=generated.tf` though the name servers will not be the correct ones
 - terraform apply
 
 - Manually Update at Registrar: You'll need to manually update the name servers at your domain registrar (e.g., GoDaddy, Namecheap) to match the ones assigned by AWS. 
-## Manually make a google oauth app to support social login (not supported in terraform unfortunately) 
-I followed the instructions here:
+  - Go to hosted zones, expand Hosted Zone details and copy the name servers
+  - Go to domain name and edit name servers
+
+### Manually make a google oauth app to support social login (not supported in terraform unfortunately) 
+I followed [these instructions](https://developer.auth0.com/resources/labs/authentication/google-social-connection-to-login#introduction).
 
 Instead of updating your connection through the website, keep the client id and secret id for updating auth0 terraform.
 To do so add the following variables to your bash file:
@@ -40,8 +44,7 @@ To do so add the following variables to your bash file:
 - export TF_VAR_google_oauth_client_secret
 
 ## Manually make a github oath app to support social login (not supported in terraform unfortunately)
-I followed the instructions here:
-https://developer.auth0.com/resources/labs/authentication/authenticate-using-github#introduction
+I followed [these instructions](https://developer.auth0.com/resources/labs/authentication/authenticate-using-github#introduction).
 Instead of updating your connection through the website, keep the client id and secret id for updating auth0 terraform.
 To do so add the following variables to your bash file:
 

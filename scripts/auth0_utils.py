@@ -107,7 +107,6 @@ if __name__ == "__main__":
     }
     if refresh_tokens:
         token_folder = make_token_folder()
-
         admin_access_token = get_test_token_user(admin_info_token)
         validate_token(admin_access_token, os.environ['AUTH0_AUDIENCE'])
         with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:

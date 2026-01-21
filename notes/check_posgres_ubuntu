@@ -8,7 +8,6 @@ aws rds describe-db-instances
 under endpoint, address:
 production.cke8al3jes86.us-west-2.rds.amazonaws.com
 
-
 psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
 called my_db i guess
 postgres://production.cke8al3jes86.us-west-2.rds.amazonaws.com/my_db 

@@ -9,9 +9,9 @@ AWS ec2 (production)
   - log into bare instance and create an ssh key
     - https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys-on-ubuntu-22-04
 
-  - add public key to github repository under personal settings
+  - add public key to github repository under personal settings deploy key
   - git clone git@github.com:margaretlange/fastapi-tdd-docker.git 
-  - bash scripts/ec2.sh
+  - bash scripts/setup_ec2.sh
 
 - run init-letsencrypt.sh 
 - collect environment configuration variables and secrets
@@ -25,6 +25,26 @@ AWS ec2 (production)
 ./services/summaries/setenv.sh > .env
 
 - make sure it's possible to get into postgres
+
+aws rds describe-db-instances
+under endpoint, address:
+
+psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
+called my_db i guess
+postgres://production.cke8al3jes86.us-west-2.rds.amazonaws.com/my_db 
+
+make sure the DATABASE_URL is well formed. that was my issue
+here is the correct format:
+'postgres://[user]:[password]@production.cke8al3jes86.us-west-2.rds.amazonaws.com:5432/my_db'
+
+try to log in
+psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
+
 - run commands in scripts/set_sshagent.sh
+docker-compose -f docker-compose-api-only.yml up --build -d
+
 - migrate database
+
+
 - access postman 
+UGH

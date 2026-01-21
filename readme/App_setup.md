@@ -15,10 +15,10 @@ python3 scripts/auth0_utils.py --create_users
 - set up local environment files for api
 (rename environment)
 ./services/summaries/setenv.sh > .env
-
+add the JWT test tokens you have just generated
 
 - set up local environment files for react
-./services/summaries/setenv.sh > .env
+./services/client/setenv.sh > .env
 
 - Set up local ssh key to pull the git deep researcher repository securely 
   - you must add this ssh key to your git account

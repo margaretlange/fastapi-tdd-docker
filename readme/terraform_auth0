@@ -1,0 +1,21 @@
+api.tf
+application.tf
+
+do twice
+
+Then fill in credentials for the new application and do the rest
+variables.tf
+credentials.tf
+client_connection.tf
+connection.tf
+
+client_grant.tf
+
+permissions.tf
+roles.tf
+
+branding.tf
+guardian.tf
+
+prompt.tf
+pages.tf

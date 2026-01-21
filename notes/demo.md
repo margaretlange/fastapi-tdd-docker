@@ -20,3 +20,4 @@ reset docker if running out of memory
 
 test postman endpoints public and private
 then test substantive endpoints
+
