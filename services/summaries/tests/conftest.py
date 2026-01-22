@@ -5,6 +5,7 @@ import os
 
 # import pdb
 import pytest
+import logging
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
@@ -18,6 +19,8 @@ from tests.auth_utils import (
 )
 
 from tests.auth_utils import get_test_token_admin  # isort:skip
+
+logger = logging.getLogger("uvicorn")
 
 
 def get_settings_override():

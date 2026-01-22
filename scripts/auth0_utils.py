@@ -6,10 +6,32 @@ from auth0.management import Auth0
 import time
 import pathlib
 import os
+from dotenv import load_dotenv, set_key
 
 
-def make_token_folder():
-    ts = str(int(time.time()))
+def get_last_token_ts():
+    top_folder = "%s/test_tokens" % (os.environ['HOME'])
+    all_timestamps = os.listdir(top_folder)
+    all_timestamps = [int(ts) for ts in all_timestamps]
+    all_timestamps.sort()
+    latest = all_timestamps[-1]
+    return latest
+
+
+def get_latest_token(admin=False):
+    top_folder = "%s/test_tokens" % (os.environ['HOME'])
+    latest = get_last_token_ts()
+    if admin:
+        filename = "admin_access_jwk.txt"
+    else:
+        filename = "member_access_jwk.txt"
+    top_token_file = "%s/%s/%s" % (top_folder, latest, filename)
+    with open(top_token_file, 'r') as fh:
+        token = fh.read()
+    return token
+
+
+def make_token_folder(ts):
     folder = "%s/test_tokens/%s" % (os.environ['HOME'], ts)
     pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
     return folder
@@ -72,15 +94,47 @@ def get_management_token():
     return token
 
 
+def refresh_tokens(admin_info_token, member_info_token, ts):
+    last_token_ts = get_last_token_ts()
+    time_elapsed = ts - last_token_ts
+    if time_elapsed > 86400:
+        print("refreshing tokens")
+        token_folder = make_token_folder()
+        admin_access_token = get_test_token_user(admin_info_token)
+        validate_token(admin_access_token, os.environ['AUTH0_AUDIENCE'])
+        with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:
+            fh.write(admin_access_token)
+
+        member_access_token = get_test_token_user(member_info_token)
+        validate_token(member_access_token, os.environ['AUTH0_AUDIENCE'])
+        with open(f'{token_folder}/member_access_jwk.txt', 'w') as fh:
+            fh.write(member_access_token)
+    else:
+        print("old tokens are still valid")
+
+
+def write_tokens_to_config():
+    home = os.environ['HOME']
+    env_path = f"{home}/fastapi-tdd-docker/services/summaries/.env"
+    # load_dotenv(dotenv_path=env_path)
+    admin_token = get_latest_token(admin=True)
+    member_token = get_latest_token(admin=False)
+    set_key(env_path, "JWT_TEST_TOKEN_ADMIN", admin_token)
+    set_key(env_path, "JWT_TEST_TOKEN_MEMBER", member_token)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--refresh_tokens", action="store_true",
                                 help="Refresh test tokens for admin and member user")
     parser.add_argument("--create_users", action="store_true",
                                 help="Create admin and member user")
+    parser.add_argument("--update_config", action="store_true",
+                                help="Update fastapi configuration file")
     args = parser.parse_args()
-    refresh_tokens = args.refresh_tokens
+    refresh = args.refresh_tokens
     create_users = args.create_users
+    update_config = args.update_config
     member_info = {
         "email": "testtwo@domain.com",
         "password": os.environ['AUTH0_TEST_MEMBER_PASSWORD'],
@@ -105,17 +159,9 @@ if __name__ == "__main__":
         "realm": "Username-Password-Authentication",
         "audience": os.environ['AUTH0_AUDIENCE']
     }
-    if refresh_tokens:
-        token_folder = make_token_folder()
-        admin_access_token = get_test_token_user(admin_info_token)
-        validate_token(admin_access_token, os.environ['AUTH0_AUDIENCE'])
-        with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:
-            fh.write(admin_access_token)
-
-        member_access_token = get_test_token_user(member_info_token)
-        validate_token(member_access_token, os.environ['AUTH0_AUDIENCE'])
-        with open(f'{token_folder}/member_access_jwk.txt', 'w') as fh:
-            fh.write(member_access_token)
+    if refresh:
+        now_ts = int(time.time())
+        refresh_tokens(admin_info_token, member_info_token, now_ts)
 
     if create_users:
         token = get_management_token()
@@ -124,3 +170,8 @@ if __name__ == "__main__":
         validate_token(token, audience)
         create_test_user(member_info, token, admin=False)
         create_test_user(admin_info, token, admin=True)
+
+    if update_config:
+        now_ts = int(time.time())
+        refresh_tokens(admin_info_token, member_info_token, now_ts)
+        write_tokens_to_config()

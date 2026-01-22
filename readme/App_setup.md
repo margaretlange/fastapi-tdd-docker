@@ -24,10 +24,10 @@ add the JWT test tokens you have just generated
   - you must add this ssh key to your git account
 - test back end only
 
-docker-compose -f docker-compose-api-only-no-nginx.yml up --build -d
-docker-compose -f docker-compose-api-only-no-nginx.yml exec web python -m pytest
-docker-compose -f docker-compose-api-only-no-nginx.yml exec web python -m pytest --integration
-docker-compose -f docker-compose-api-only-no-nginx.yml down
+dc -f docker-compose-api-only-no-nginx.yml up --build -d
+dc -f docker-compose-api-only-no-nginx.yml exec web python -m pytest
+dc -f docker-compose-api-only-no-nginx.yml exec web python -m pytest --integration --log-cli-level=DEBUG
+dc -f docker-compose-api-only-no-nginx.yml down
 
 - test back end and front end together (gulp)
 

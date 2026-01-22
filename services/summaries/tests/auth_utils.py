@@ -1,15 +1,18 @@
 import datetime
 from functools import partial
-
+import logging
 import jwt
 from auth0.authentication import GetToken
 
 from app.config import settings
 from tests.auth_data import token_directory
 
+logger = logging.getLogger("uvicorn")
+
 
 def get_test_token(token_name: str) -> str:
     if not getattr(settings, token_name):
+        logging.debug("Creating token for %s" % token_name)
         token = GetToken(
             settings.auth0_domain,
             settings.auth0_client_id,
@@ -22,9 +25,13 @@ def get_test_token(token_name: str) -> str:
         del info_dict["permissions"]
         token = token.login(**info_dict)
         token = token["access_token"]
+        logging.debug("New token is %s" % token)
         setattr(settings, token_name, token)
         return token
-    return getattr(settings, token_name)
+    else:
+        token = getattr(settings, token_name)
+        logging.debug("Using existing token for %s: %s" % (token_name, token))
+        return token
 
 
 get_test_token_member = partial(get_test_token, "jwt_test_token_member")
