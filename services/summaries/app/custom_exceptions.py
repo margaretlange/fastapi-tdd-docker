@@ -2,9 +2,9 @@ from fastapi import HTTPException, status
 
 
 class BadCredentialsException(HTTPException):
-    def __init__(self):
+    def __init__(self, bad_auth):
         super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Bad credentials"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail=bad_auth
         )
 
 

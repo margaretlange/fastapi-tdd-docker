@@ -42,6 +42,7 @@ if __name__ == "__main__":
         "Content-Type": "application/json",
     }
     res = simple_test(my_header)
-    pdb.set_trace()
+    print(res)
+    # pdb.set_trace()
     # with setup_test_user(my_header):
     #    print(summary_test(my_header))

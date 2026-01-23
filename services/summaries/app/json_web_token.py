@@ -9,7 +9,10 @@ from app.custom_exceptions import (  # isort: skip
     UnableCredentialsException,
 )
 
-# import pdb
+
+import logging
+
+logger = logging.getLogger("uvicorn")
 
 
 @dataclass
@@ -37,6 +40,7 @@ class JsonWebToken:
             )
         except jwt.exceptions.PyJWKClientError:
             raise UnableCredentialsException
-        except jwt.exceptions.InvalidTokenError:
-            raise BadCredentialsException
+        except jwt.exceptions.InvalidTokenError as e:
+            logging.debug(e)
+            raise BadCredentialsException(f"{e}")
         return payload

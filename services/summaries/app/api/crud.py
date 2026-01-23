@@ -4,13 +4,17 @@ from typing import List, Tuple, Union
 
 from app.models.pydantic import SummaryPayloadSchema, UserPayloadSchema
 from app.models.tortoise import SummarySchema, TextSummary, User
-
+import logging
 # user crud
 
 # current user
 
+logger = logging.getLogger("uvicorn")
+
 
 async def post_user(payload: UserPayloadSchema, auth_sub: str) -> int:
+    logging.debug("User name: %s" % payload.username)
+    logging.debug("Auth sub: %s" % auth_sub)
     user = User(username=payload.username, auth_sub=auth_sub)
     await user.save()
     return user.id

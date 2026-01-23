@@ -12,13 +12,17 @@
 activate venv
 python3 scripts/auth0_utils.py --create_users
 
+- make sure tokens are fresh
+python3 scripts/auth0_utils.py --update_config
+
 - set up local environment files for api
 (rename environment)
 ./services/summaries/setenv.sh > .env
-add the JWT test tokens you have just generated
+use docker database
 
-- set up local environment files for react
-./services/client/setenv.sh > .env
+add the JWT test tokens you have just generated
+python3 script/auth0_utils.py --update_config
+[Note: in general you always have to restart docker to let the new environment be read in]
 
 - Set up local ssh key to pull the git deep researcher repository securely 
   - you must add this ssh key to your git account
@@ -27,14 +31,37 @@ add the JWT test tokens you have just generated
 dc -f docker-compose-api-only-no-nginx.yml up --build -d
 dc -f docker-compose-api-only-no-nginx.yml exec web python -m pytest
 dc -f docker-compose-api-only-no-nginx.yml exec web python -m pytest --integration --log-cli-level=DEBUG
-dc -f docker-compose-api-only-no-nginx.yml down
+# dc -f docker-compose-api-only-no-nginx.yml down
 
+initalize database
+dc -f docker-compose-api-only.yml exec web aerich init -t app.db.TORTOISE_ORM
+dc -f docker-compose-api-only-no-nginx.yml exec web aerich upgrade 
+
+check to make sure db was initialized
+docker-compose exec web-db psql -U postgres
+\l
+\c web_dev
+\d user to inspect a particular table
+
+test from postman
+
+make sure admin token is refreshed
+python3 scripts/auth0_utils.py --admin
+try all of the api commands from postman to make sure that they work
+
+
+NEXT
 - test back end and front end together (gulp)
 
 - docker-compose up --build -d
 - initialize local db if not initialized already
    - kind of a pain
-   - 
+ 
+
+- set up local environment files for react
+./services/client/setenv.sh > .env
+
+  - 
 - Test it all out
 I suggest tailing the web and client pods in separate windows
 - try pinging just the public endpoint of the api from curl or the swagger docs tool. This should work and you should also see the request show up in the api pod logs

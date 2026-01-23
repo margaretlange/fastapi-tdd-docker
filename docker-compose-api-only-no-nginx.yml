@@ -6,7 +6,7 @@ services:
       context: ./services/summaries
       ssh:
         - default
-    command: gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120
+    command: gunicorn --bind 0.0.0.0:8000 app.main:app -k uvicorn.workers.UvicornWorker --timeout=120 --access-logfile=- --log-level debug 
     volumes:
       - ./services/summaries:/usr/src/app
     env_file:

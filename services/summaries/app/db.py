@@ -26,11 +26,12 @@ TORTOISE_ORM = {
 
 
 def init_db(app: FastAPI) -> None:
+    log.info("Initializing database at %s..." % os.environ.get("DATABASE_URL"))
     register_tortoise(
         app,
         db_url=os.environ.get("DATABASE_URL"),
         modules={"models": ["app.models.tortoise"]},
-        generate_schemas=False,
+        generate_schemas=True,
         add_exception_handlers=True,
     )
 
@@ -55,21 +56,21 @@ async def seed_db() -> None:
     test = UserPayloadSchema(**{"username": "testtwo@domain.com"})
     await post_user(test, "auth0|67c7664f657d0f4f7ac909a6")
     # Trying some summary code next
-    cd_payload = SummaryPayloadSchema(query="Who was Charles Darwin?")
-    al_payload = SummaryPayloadSchema(query="Who was Ada Lovelace?")
-    acd_payload = SummaryPayloadSchema(query="Who was Arthur Conan Doyle?")
-    summary_id, user_id = await post_current_active_user_summary(
-        "google-oauth2|106169556027978612521", cd_payload
-    )
-    await generate_summary(summary_id, user_id, str(cd_payload.query))
-    summary_id, user_id = await post_current_active_user_summary(
-        "google-oauth2|106169556027978612521", al_payload
-    )
-    await generate_summary(summary_id, user_id, str(al_payload.query))
-    summary_id, user_id = await post_current_active_user_summary(
-        "auth0|67c7664f657d0f4f7ac909a6", acd_payload
-    )
-    await generate_summary(summary_id, user_id, str(acd_payload.query))
+    # cd_payload = SummaryPayloadSchema(query="Who was Charles Darwin?")
+    # al_payload = SummaryPayloadSchema(query="Who was Ada Lovelace?")
+    # acd_payload = SummaryPayloadSchema(query="Who was Arthur Conan Doyle?")
+    # summary_id, user_id = await post_current_active_user_summary(
+    #    "google-oauth2|106169556027978612521", cd_payload
+    # )
+    # await generate_summary(summary_id, user_id, str(cd_payload.query))
+    #summary_id, user_id = await post_current_active_user_summary(
+    #    "google-oauth2|106169556027978612521", al_payload
+    #)
+    #await generate_summary(summary_id, user_id, str(al_payload.query))
+    #summary_id, user_id = await post_current_active_user_summary(
+    #    "auth0|67c7664f657d0f4f7ac909a6", acd_payload
+    #)
+    #await generate_summary(summary_id, user_id, str(acd_payload.query))
 
 
 # new

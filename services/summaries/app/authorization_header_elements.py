@@ -6,6 +6,8 @@ from app.custom_exceptions import (  # isort: skip
     BadCredentialsException,
     RequiresAuthenticationException,
 )
+import pdb
+import logging
 
 
 class AuthorizationHeaderElements(NamedTuple):
@@ -20,7 +22,7 @@ def get_authorization_header_elements(
     try:
         authorization_scheme, bearer_token = authorization_header.split()
     except ValueError:
-        raise BadCredentialsException
+        raise BadCredentialsException(authorization_header)
     else:
         valid = authorization_scheme.lower() == "bearer" and bool(bearer_token.strip())
         return AuthorizationHeaderElements(authorization_scheme, bearer_token, valid)
@@ -35,6 +37,6 @@ def get_bearer_token(request: StarletteRequest) -> str:
         if authorization_header_elements.are_valid:
             return authorization_header_elements.bearer_token
         else:
-            raise BadCredentialsException
+            raise BadCredentialsException(authorization_header)
     else:
         raise RequiresAuthenticationException

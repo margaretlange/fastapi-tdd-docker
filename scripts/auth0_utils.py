@@ -99,7 +99,7 @@ def refresh_tokens(admin_info_token, member_info_token, ts):
     time_elapsed = ts - last_token_ts
     if time_elapsed > 86400:
         print("refreshing tokens")
-        token_folder = make_token_folder()
+        token_folder = make_token_folder(ts)
         admin_access_token = get_test_token_user(admin_info_token)
         validate_token(admin_access_token, os.environ['AUTH0_AUDIENCE'])
         with open(f'{token_folder}/admin_access_jwk.txt', 'w') as fh:
@@ -131,10 +131,16 @@ if __name__ == "__main__":
                                 help="Create admin and member user")
     parser.add_argument("--update_config", action="store_true",
                                 help="Update fastapi configuration file")
+    parser.add_argument("--admin", action="store_true",
+                                help="Print latest admin token")
+    parser.add_argument("--member", action="store_true",
+                                help="Print latest member token")
     args = parser.parse_args()
     refresh = args.refresh_tokens
     create_users = args.create_users
     update_config = args.update_config
+    admin = args.admin
+    member = args.member
     member_info = {
         "email": "testtwo@domain.com",
         "password": os.environ['AUTH0_TEST_MEMBER_PASSWORD'],
@@ -171,7 +177,16 @@ if __name__ == "__main__":
         create_test_user(member_info, token, admin=False)
         create_test_user(admin_info, token, admin=True)
 
+    ## you still must separately restart the docker container for the new environment to be recognized
     if update_config:
         now_ts = int(time.time())
         refresh_tokens(admin_info_token, member_info_token, now_ts)
         write_tokens_to_config()
+
+    if admin:
+        my_token = get_latest_token(admin=True)
+        print(my_token)
+    if member:
+        my_token = get_latest_token(admin=False)
+        print(my_token)
+
