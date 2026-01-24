@@ -37,15 +37,9 @@ note that I did learn that just erasing the RDS tables didn't work well.
 LOCAL POSTGRES
 psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
 
-sudo -u postgres psql
-DROP Database web_dev;
-CREATE DATABASE web_dev;
-GRANT ALL PRIVILEGES ON DATABASE web_dev TO maggie;
-psql -h localhost -U maggie -d web_dev
 
-postgres://maggie:[passwd]@host.docker.internal:5432/web_dev
+I managed to solved it! I had to modify pg_hba file from postgresql! So as summary for people in future I had to add the extra_host thing. modify postgresql.conf and pg_hba.
 
-select auth_sub from "user";
-select * from "user";
-You need quotes because user is a reserved key name.
-https://stackoverflow.com/questions/22256124/cannot-create-a-database-table-named-user-in-postgresql
+edit postgresql.conf
+listen_addresses = '*'
+

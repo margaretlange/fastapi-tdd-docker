@@ -1,3 +1,11 @@
+- get docker and docker-compose version
+docker --version
+docker-compose version
+
+Docker version 29.1.3, build f52814d
+Docker Compose version v2.20.3
+
+
 - collect environment configuration variables and secrets
   - API_ENVIRONMENT is dev and NODE_ENV is development
   - CLIENT_ORIGIN_URL is "http://localhost:4040"

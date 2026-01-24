@@ -1,4 +1,4 @@
-[2026-01-23 04:12:11 +0000] [1] [DEBUG] Current configuration:
+[2026-01-24 01:04:14 +0000] [1] [DEBUG] Current configuration:
   config: ./gunicorn.conf.py
   wsgi_app: None
   bind: ['0.0.0.0:8000']
@@ -58,22 +58,22 @@
   default_proc_name: app.main:app
   pythonpath: None
   paste: None
-  on_starting: <function OnStarting.on_starting at 0x772de7388860>
-  on_reload: <function OnReload.on_reload at 0x772de73889a0>
-  when_ready: <function WhenReady.when_ready at 0x772de7388ae0>
-  pre_fork: <function Prefork.pre_fork at 0x772de7388cc0>
-  post_fork: <function Postfork.post_fork at 0x772de7388e00>
-  post_worker_init: <function PostWorkerInit.post_worker_init at 0x772de7388f40>
-  worker_int: <function WorkerInt.worker_int at 0x772de7389080>
-  worker_abort: <function WorkerAbort.worker_abort at 0x772de73891c0>
-  pre_exec: <function PreExec.pre_exec at 0x772de7389300>
-  pre_request: <function PreRequest.pre_request at 0x772de7389440>
-  post_request: <function PostRequest.post_request at 0x772de73894e0>
-  child_exit: <function ChildExit.child_exit at 0x772de7389620>
-  worker_exit: <function WorkerExit.worker_exit at 0x772de7389760>
-  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x772de73898a0>
-  on_exit: <function OnExit.on_exit at 0x772de73899e0>
-  ssl_context: <function NewSSLContext.ssl_context at 0x772de7389bc0>
+  on_starting: <function OnStarting.on_starting at 0x71e0630cc860>
+  on_reload: <function OnReload.on_reload at 0x71e0630cc9a0>
+  when_ready: <function WhenReady.when_ready at 0x71e0630ccae0>
+  pre_fork: <function Prefork.pre_fork at 0x71e0630cccc0>
+  post_fork: <function Postfork.post_fork at 0x71e0630cce00>
+  post_worker_init: <function PostWorkerInit.post_worker_init at 0x71e0630ccf40>
+  worker_int: <function WorkerInt.worker_int at 0x71e0630cd080>
+  worker_abort: <function WorkerAbort.worker_abort at 0x71e0630cd1c0>
+  pre_exec: <function PreExec.pre_exec at 0x71e0630cd300>
+  pre_request: <function PreRequest.pre_request at 0x71e0630cd440>
+  post_request: <function PostRequest.post_request at 0x71e0630cd4e0>
+  child_exit: <function ChildExit.child_exit at 0x71e0630cd620>
+  worker_exit: <function WorkerExit.worker_exit at 0x71e0630cd760>
+  nworkers_changed: <function NumWorkersChanged.nworkers_changed at 0x71e0630cd8a0>
+  on_exit: <function OnExit.on_exit at 0x71e0630cd9e0>
+  ssl_context: <function NewSSLContext.ssl_context at 0x71e0630cdbc0>
   proxy_protocol: False
   proxy_allow_ips: ['127.0.0.1']
   keyfile: None
@@ -86,80 +86,121 @@
   ciphers: None
   raw_paste_global_conf: []
   strip_header_spaces: False
-[2026-01-23 04:12:11 +0000] [1] [INFO] Starting gunicorn 21.0.1
-[2026-01-23 04:12:11 +0000] [1] [DEBUG] Arbiter booted
-[2026-01-23 04:12:11 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
-[2026-01-23 04:12:11 +0000] [1] [INFO] Using worker: uvicorn.workers.UvicornWorker
-[2026-01-23 04:12:11 +0000] [32] [INFO] Booting worker with pid: 32
-[2026-01-23 04:12:11 +0000] [1] [DEBUG] 1 workers
-2026-01-23 04:12:13 - asyncio - DEBUG - Using selector: EpollSelector
-[2026-01-23 04:12:13 +0000] [32] [INFO] Started server process [32]
-[2026-01-23 04:12:13 +0000] [32] [INFO] Waiting for application startup.
-2026-01-23 04:12:13 - uvicorn - INFO - Starting up...
-2026-01-23 04:12:13 - uvicorn - INFO - Initializing database at postgres://postgres:postgres@web-db:5432/web_dev...
-[2026-01-23 04:12:13 +0000] [32] [INFO] Application startup complete.
-2026-01-23 04:12:42 - root - DEBUG - User name: Jane Doe
-2026-01-23 04:12:42 - root - DEBUG - Auth sub: auth0|697038499fd758232f159add
-[2026-01-23 04:12:42 +0000] [32] [ERROR] Exception in ASGI application
-Traceback (most recent call last):
-  File "/usr/local/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 404, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 84, in __call__
-    return await self.app(scope, receive, send)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/fastapi/applications.py", line 1054, in __call__
-    await super().__call__(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/applications.py", line 112, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/middleware/errors.py", line 187, in __call__
-    raise exc
-  File "/usr/local/lib/python3.12/site-packages/starlette/middleware/errors.py", line 165, in __call__
-    await self.app(scope, receive, _send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 714, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 734, in app
-    await route.handle(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
-    await self.app(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/usr/local/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
-    raw_response = await run_endpoint_function(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
-    return await dependant.call(**values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/src/app/app/api/users.py", line 42, in create_user
-    user_id = await crud.post_user(payload, token["sub"])
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/src/app/app/api/crud.py", line 19, in post_user
-    await user.save()
-  File "/usr/local/lib/python3.12/site-packages/tortoise/models.py", line 976, in save
-    db = using_db or self._choose_db(True)
-                     ^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/tortoise/models.py", line 1084, in _choose_db
-    db = router.db_for_write(cls)
-         ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/tortoise/router.py", line 42, in db_for_write
-    return self._db_route(model, "db_for_write")
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/tortoise/router.py", line 34, in _db_route
-    return connections.get(self._router_func(model, action))
-                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/usr/local/lib/python3.12/site-packages/tortoise/router.py", line 21, in _router_func
-    for r in self._routers:
-TypeError: 'NoneType' object is not iterable
+[2026-01-24 01:04:14 +0000] [1] [INFO] Starting gunicorn 21.0.1
+[2026-01-24 01:04:14 +0000] [1] [DEBUG] Arbiter booted
+[2026-01-24 01:04:14 +0000] [1] [INFO] Listening at: http://0.0.0.0:8000 (1)
+[2026-01-24 01:04:14 +0000] [1] [INFO] Using worker: uvicorn.workers.UvicornWorker
+[2026-01-24 01:04:14 +0000] [34] [INFO] Booting worker with pid: 34
+[2026-01-24 01:04:14 +0000] [1] [DEBUG] 1 workers
+2026-01-24 01:04:15 - uvicorn - INFO - Initializing database at postgres://maggie:swann123@host.docker.internal:5432/web_dev...
+2026-01-24 01:04:15 - asyncio - DEBUG - Using selector: EpollSelector
+[2026-01-24 01:04:15 +0000] [34] [INFO] Started server process [34]
+[2026-01-24 01:04:15 +0000] [34] [INFO] Waiting for application startup.
+2026-01-24 01:04:15 - tortoise - DEBUG - Tortoise-ORM startup
+    connections: {'default': {'engine': 'tortoise.backends.asyncpg', 'credentials': {'port': 5432, 'database': 'web_dev', 'host': 'host.docker.internal', 'user': 'maggie', 'password': 'sw***'}}}
+    apps: {'models': {'models': ['app.models.tortoise'], 'default_connection': 'default'}}
+2026-01-24 01:04:15 - tortoise - INFO - Tortoise-ORM started, {'default': <tortoise.backends.asyncpg.client.AsyncpgDBClient object at 0x71e05fe5b680>}, {'models': {'TextSummary': <class 'app.models.tortoise.TextSummary'>, 'User': <class 'app.models.tortoise.User'>}}
+2026-01-24 01:04:15 - tortoise - INFO - Tortoise-ORM generating schema
+2026-01-24 01:04:15 - tortoise - DEBUG - Creating schema: CREATE TABLE IF NOT EXISTS "user" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "username" TEXT NOT NULL,
+    "auth_sub" VARCHAR(50) NOT NULL UNIQUE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS "textsummary" (
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "query" TEXT NOT NULL,
+    "summary" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE
+);
+[2026-01-24 01:04:16 +0000] [34] [ERROR] Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/starlette/routing.py", line 692, in lifespan
+    async with self.lifespan_context(app) as maybe_state:
+  File "/usr/local/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/fastapi/routing.py", line 133, in merged_lifespan
+    async with original_context(app) as maybe_original_state:
+  File "/usr/local/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/fastapi/__init__.py", line 271, in orm_lifespan
+    async with RegisterTortoise(
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/fastapi/__init__.py", line 177, in __aenter__
+    await self.init_orm()
+  File "/usr/local/lib/python3.12/site-packages/tortoise/contrib/fastapi/__init__.py", line 166, in init_orm
+    await Tortoise.generate_schemas()
+  File "/usr/local/lib/python3.12/site-packages/tortoise/__init__.py", line 594, in generate_schemas
+    await generate_schema_for_client(connection, safe)
+  File "/usr/local/lib/python3.12/site-packages/tortoise/utils.py", line 46, in generate_schema_for_client
+    await generator.generate_from_string(schema)
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/base/schema_generator.py", line 504, in generate_from_string
+    await self.client.execute_script(creation_string)
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/base_postgres/client.py", line 33, in _translate_exceptions
+    return await self._translate_exceptions(func, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/asyncpg/client.py", line 89, in _translate_exceptions
+    return await func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/base_postgres/client.py", line 150, in execute_script
+    async with self.acquire_connection() as connection:
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/base/client.py", line 360, in __aenter__
+    await self.ensure_connection()
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/base/client.py", line 357, in ensure_connection
+    await self.client.create_connection(with_db=True)
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/asyncpg/client.py", line 61, in create_connection
+    self._pool = await self.create_pool(password=self.password, **self._template)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/tortoise/backends/asyncpg/client.py", line 72, in create_pool
+    return await asyncpg.create_pool(None, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 403, in _async__init__
+    await self._initialize()
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 430, in _initialize
+    await first_ch.connect()
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 128, in connect
+    self._con = await self._pool._get_new_connection()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/pool.py", line 502, in _get_new_connection
+    con = await connection.connect(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connection.py", line 2329, in connect
+    return await connect_utils._connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 1017, in _connect
+    raise last_error or exceptions.TargetServerAttributeNotMatched(
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 991, in _connect
+    conn = await _connect_addr(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 828, in _connect_addr
+    return await __connect_addr(params, True, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 873, in __connect_addr
+    tr, pr = await connector
+             ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/connect_utils.py", line 744, in _create_ssl_connection
+    tr, pr = await loop.create_connection(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1077, in create_connection
+    infos = await self._ensure_resolved(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1453, in _ensure_resolved
+    return await loop.getaddrinfo(host, port, family=family, type=type,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 898, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/socket.py", line 963, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno -2] Name or service not known
+
+[2026-01-24 01:04:16 +0000] [34] [ERROR] Application startup failed. Exiting.
+[2026-01-24 01:04:16 +0000] [34] [INFO] Worker exiting (pid: 34)
+[2026-01-24 01:04:16 +0000] [1] [ERROR] Worker (pid:34) exited with code 3
+[2026-01-24 01:04:16 +0000] [1] [ERROR] Shutting down: Master
+[2026-01-24 01:04:16 +0000] [1] [ERROR] Reason: Worker failed to boot.
