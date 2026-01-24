@@ -38,8 +38,4 @@ LOCAL POSTGRES
 psql -h production.cke8al3jes86.us-west-2.rds.amazonaws.com -U postgres -d my_db
 
 
-I managed to solved it! I had to modify pg_hba file from postgresql! So as summary for people in future I had to add the extra_host thing. modify postgresql.conf and pg_hba.
-
-edit postgresql.conf
-listen_addresses = '*'
 

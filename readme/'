@@ -55,6 +55,6 @@ check db again
 
 check https://mmldemo.com/docs
 - access postman 
+base_url should be https://mmldemo.com
 
-docker-compose -f docker-compose-api-only.yml down
-
+tail the nginx logs 
