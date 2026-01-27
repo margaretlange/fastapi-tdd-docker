@@ -7,3 +7,6 @@ Still discovering logging and the debug tag has been useful.
 I was able to get a summary.
 Goal for tomorrow (Friday) is to get just the postman version working on the cloud.
 Then Sat-Sun try to get the GUI working again
+
+Jan 23 2026
+Got local postgres and aws postgres working and was able to do a demo.
