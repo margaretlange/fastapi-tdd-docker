@@ -115,7 +115,7 @@ def refresh_tokens(admin_info_token, member_info_token, ts):
 
 def write_tokens_to_config():
     home = os.environ['HOME']
-    env_path = f"{home}/fastapi-tdd-docker/services/summaries/.env"
+    env_path = f"{home}/fastapi-demo/services/summaries/.env"
     # load_dotenv(dotenv_path=env_path)
     admin_token = get_latest_token(admin=True)
     member_token = get_latest_token(admin=False)
